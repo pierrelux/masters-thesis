@@ -1,0 +1,33 @@
+\documentclass[tikz]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{shapes}
+\begin{document}
+\tikzstyle{space} = [ellipse, minimum height=3cm,minimum width=2cm,draw, shading=radial, inner color=white, outer color=gray!15]
+
+\begin{tikzpicture}
+% Spaces and titles
+\draw (0,0) node[style=space, label={[anchor=south]below:Policy Space $\Pi_{stat}$}] (Policy) {};
+\draw (6,0) node[style=space, label={[anchor=south]below:Value-function Space}] (Value) {};
+ 
+% Points
+\fill (0,0) circle[radius=2pt] node[anchor=east, label={[anchor=east]left:$\pi^*$}] (P2) {};
+\fill (0,0.5) circle[radius=2pt] node[anchor=east, label={[anchor=east]left:$\pi^*$}] (P1) {};
+\fill (0,-0.5) circle[radius=2pt] node[anchor=east, label={[anchor=east]left:$\pi^*$}] (P3) {};
+\fill (6,0) circle[radius=2pt] node[anchor=west, label={[anchor=west]right:$V^*$}] (V) {};
+
+% Arrows
+\path[->, >=stealth] (P1) edge [thick, bend left=20] node {} (V.west);
+\path[<-, >=stealth, dashed] (P1.north east) edge [thick, bend left=20] node {} (V.north west);
+
+\path[->, >=stealth] (P2) edge [thick] node {} (V.west);
+\path[<-, >=stealth, dashed] (P2.north east) edge [thick] node {} (V.north west);
+
+\path[->, >=stealth] (P3) edge [thick, bend right=20] node {} (V.west);
+\path[<-, >=stealth, dashed] (P3.south east) edge [thick, bend right=20] node {} (V.south west);
+
+% Legend
+\draw [->, >=stealth, thick] (2,2) -- node[midway, above] {Policy Evaluation} (3.5, 2);
+\draw [<-, >=stealth, dashed, thick] (2,1.25) -- node[midway, above] {Policy Derivation}  (3.5, 1.25);
+
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,16 @@
+\documentclass[tikz]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{shapes}
+\begin{document}
+\tikzstyle{space} = [ellipse, minimum height=3cm,minimum width=2cm,draw, shading=radial, inner color=white, outer color=gray!15]
+
+\begin{tikzpicture}
+\draw (0,0) node[style=space, label={[anchor=south]below:Policy Space $\Pi_{stat}$}] (Policy) {};
+\draw (5,0) node[style=space, label={[anchor=south]below:Value-function Space}] (Value) {};
+ 
+\fill (0,0) circle[radius=2pt] node[anchor=south east] (P) {$\pi$};
+\fill (5,0) circle[radius=2pt] node[anchor=south west] (V) {$V^\pi$};
+
+\path[->, >=stealth] (P) edge [thick, bend left=20, midway, above] node {Policy Evaluation} (V);
+\end{tikzpicture}
+\end{document}
