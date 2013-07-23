@@ -36,6 +36,7 @@ citecolor = [HTML]{0F82F5},
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{amsthm}
+\usepackage{dsfont}
 \usepackage{xspace}
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows}
@@ -52,7 +53,11 @@ citecolor = [HTML]{0F82F5},
 \def\given{\;\middle\vert\;}
 \def\optimal{\star}
 \def\transpose{\intercal}
+\def\laplacian{\mathbf{\mathcal{L}}}
+\def\eqdef{\overset{\underset{\mathrm{def}}{}}{=}}
+\def\indicator{\mathds{1}}
 \DeclareMathOperator{\expectation}{\mathbb{E}}
+\DeclareMathOperator{\vol}{\text{vol}}
 
 \newcommand{\todo}[1]{[TODO: #1]}
 \newcommand{\termidx}[1]{\index{#1}{\textbf{#1}}}
@@ -84,8 +89,8 @@ citecolor = [HTML]{0F82F5},
 \predate{\begin{center}\large}
 \postdate{\end{center}}
 
-\title{Automatic Options Discovery from the Community Structures in the State-Transition Graph}
-
+%\title{Automatic Options Discovery from the Community Structures in the State-Transition Graph}
+\title{Towards Better Theoretical Underpinnings for the Bottleneck Concept}
 \author{Pierre-Luc Bacon}
 \date{\today}
 \renewcommand\maketitlehookb{
@@ -220,7 +225,7 @@ approach proposed here.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Background
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Background}
+\chapter{Sequential Decision Making under Uncertainty}
 
 \section{Markov Chains}
 
@@ -248,11 +253,11 @@ P(X_{n+1} = j | X_0 = i_0, X_1 = i_1, ..., X_n = i) = P( X_{n+1} = j | X_n = i)
 \end{equation}
 \end{defn}
 
-The Markov (or \textit{memoryless}) could be explained in words by saying that the
-\textit{future is independent of the past, given the present state}. Therefore, knowing
-the value current value of $X_n = i$ is enough to characterize the future evolution of
-the stochastic process $\{X_{n+1}, X_{n+2}, \dots \}$ and the history $\{X_0, X_1,
-\dots, X_{n-1} \}$ can be discarded.
+The Markov property (or \textit{memoryless property}) could be explained in words by
+saying that the \textit{future is independent of the past, given the present state}.
+Therefore, knowing the value current value of $X_n = i$ is enough to characterize the
+future evolution of the stochastic process $\{X_{n+1}, X_{n+2}, \dots \}$ and the history
+$\{X_0, X_1,\dots, X_{n-1} \}$ can be discarded.
 
 A Markov chain is completely specified by the \textit{one-step} transition probabilities
 $p_{ij} = P(X_{n+1} = i | X_n = j)$ contained in its \textit{Markov} or
@@ -270,6 +275,8 @@ Furthermore, $\mathbf{P} $ must satisfy the following properties:
 \begin{equation}
 p_{ij} \geq 0 \mbox{ and } \sum_{j=1}^M p_{ij} =1 
 \end{equation}
+
+Let $\mathbf{P}^\optimal$ denote the adjoint of $\mathbf{P}$. If $\mathbf{P}^\optimal = \mathbf{P}$ holds, then the stochastic matrix is said to be \termidx{time-reversible}. 
 
 Those elements of $\mathbf{P}$ for which $p_{ii} = 1$ are said to be
 \termidx{absorbing} and once entered, the Markov chain the never escapes.
@@ -344,6 +351,41 @@ that $\sum_k \mathbf{\pi}_k = 1$ in order for $\pi$ to be a well-defined probabi
 distribution. When the Markov chain reaches the stationary distribution, we say that it
 is in \termidx{steady-state} mode.
 
+An important characterization of the properties of stochastic matrices comes from the
+theory of nonnegative matrices in the form of the Perron-Frobenius theorem. First, the spectral radius of a square matrix is defined as 
+
+\begin{equation}
+\rho(A) \overset{\underset{\mathrm{def}}{}}{=} \max_i(|\lambda_i|)
+\end{equation}
+
+The theorem in its original form about irreducible matrices \cite{Horn1986} then amounts to the following.
+
+\begin{thm}[Perron-Frobenius Theorem]
+
+Let $A$ be an irreducible and nonnegative matrix, then the following claims hold
+\begin{enumerate}
+\item The spectral radius $\rho(\mathbf{A})  > 0$
+\item $\rho(\mathbf{A})$ is an eigenvalue of $\mathbf{A}$
+\item There exists a positive vector $\mathbf{x}$ such that $\mathbf{A}\mathbf{x} = \rho(\mathbf{A})\mathbf{x}$ and $\rho(\mathbf{A})$ is a simple eigenvalue of $\mathbf{A}$.
+\item The unique eigenvector whose components sum to 1 is called \termidx{Perron
+ vector}, that is
+\begin{equation}
+\mathbf{A} \mathbf{p} = \rho(\mathbf{A}) \mathbf{p}, \hspace{2.5mm} \mathbf{p} > 0 \hspace{2.5mm} \mbox{and} \hspace{2.5mm} \|\mathbf{p}\|_1 = 1
+\end{equation}
+\end{enumerate}
+\end{thm}
+
+The theorem can also be conveniently adapted to Markov chains under the following
+lemma proven in \cite{Montenegro2006}.
+\begin{lem}
+Let $\mathbf{P}$ be the stochastic matrix associated with a irreducible and reversible 
+Markov chain over a state space $\mathcal{X}$ of size $n$. $\mathbf{P}$ must then
+have a complete spectrum of real eigenvalues of magnitude at most 1 and of the form
+\begin{equation}
+1 = \lambda_0 \geq \lambda_1 \lambda \geq \dots \geq \lambda_{n-1} \geq -1
+\end{equation}
+\end{lem}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Markov Decision Processes
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -351,7 +393,7 @@ is in \termidx{steady-state} mode.
 \begin{defn}
 \label{defn:mdp}
 A finite-action discounted \termidx{Markov Decision Process} (MDP) is a tuple
-$\mathcal{M} = \langle X, \mathcal{A}, r, \mathcal{P},\gamma \rangle$ where
+$\mathcal{M} = \langle \mathcal{X}, \mathcal{A}, r, \mathcal{P},\gamma \rangle$ where
 $\mathcal{X}$ is a non-empty countable set of states, $\mathcal{A}$ is a finite state
 of actions, $\mathcal{P}$ is a transition probability kernel giving rise to a distribution
 $P(\cdot |x, a)$ over $\mathcal{X}$ given any $x \in \mathcal{X}$ and $a
@@ -1243,68 +1285,404 @@ about the MAXQ framework.
 % From Structure to Dynamics
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{From Structure to Dynamics}
+
+At first blush, it might be tempting to overlook the ramifications of graph theory
+into that of \mdps. As it will be shown below, spectral graph theory provides a powerful
+perspective for studying the dynamical properties of Markov chains. The graph
+representation of Markov chain will act as a proxy so that matrix theory and linear
+algebra will suffice to provide rich results in a concise manner. Some of the early
+applications making use of this connection can be traced back to the
+work of Simon and Ando in \cite{SimonAndo1961}.\todo{Talk about Fiedler 73}
+
+Spectral graph theory will provide the theoretical justification for the heuristic approach
+to options discovery algorithm proposed in this work. This presentation should be seen
+as an initial foray towards a better theoretical grounding of the bottleneck concept to
+which belongs this algorithm. The notion of random walk on an arbitrary graph
+$\mathcal{G}$ will first be introduced, followed by a characterization of the convergence
+time to a stationary distribution in terms of mixing time. It will be then shown how
+graph partitioning can be achieved on the basis of the dynamics induced by the random
+walk process. Finally, it will be argued that the mixing time property of MDP-induced
+graphs is relevant to the problem of options discovery and spectral graph partitioning
+can provide the necessary construction. 
+
 \section{Random Walk}
-Given a graph $G$, we can generate a random sequence by picking a vertex uniformly at random in the neighborhood of an initial vertex and carrying on the procedure over the newly obtained vertex. This procedure corresponds to the realization of a type of random process called \textit{random walk}. More precisely, we define a \textbf{simple random walk} on a graph $G$ as a Markov Chain having $V$ as state-space and for which the transition matrix is given by:
+\label{sec:random-walk}
+The notion of random walk is necessary in the presentation of some important spectral
+properties related to the graph Laplacian in section \ref{sec:laplacian}. Given a graph
+$G$, we can generate a random sequence by picking a vertex uniformly at
+random in the neighborhood of an initial vertex and carrying on the procedure over the
+newly obtained vertex. This procedure corresponds to the realization of a type of
+random process called \textit{random walk}. More precisely, we define a \textbf{simple
+random walk} on a graph $G$ as a Markov Chain having $V$ as state-space and for
+which the transition matrix is given by:
+
 \begin{equation}
-P(x, y) = \begin{cases} 
-\frac{1}{d(x)} \hspace{2mm} \mbox{if $x \sim y$} \\
+P_{ij} = \begin{cases} 
+\frac{w_{ij}}{d(i)} \hspace{2mm} \mbox{if $i \sim j$} \\
 0 \hspace{2mm} \mbox{otherwise}
 \end{cases}
 \end{equation}
 
-\section{Mixing Time}
-
-\section{Spectral Properties}
-We will see below how the spectral properties of the Laplace operator relate to random walks. By doing so, we will define the \textit{diffusion map} and see how it yields a distance function that has a probabilistic interpretation.
-
-From the similarity matrix $W$, we can obtain a stochastic matrix $M$ by normalizing it as follow:
+Using matrix notation, the stochastic matrix of the random walk can be written as
 \begin{equation}
-M = D^{-1}W
+P = \mathbf{D}^{-1}\mathbf{W}
+\label{eq:random-walk}
 \end{equation}
 
-Note that $M$ is similar to the symmetric matrix $M_s$:
+If each vertex of $G$ has the same degree -- in which case $G$ is said to be \textit{d
+regular} -- the stationary distribution is the uniform distribution. 
+
+% Say that P is reversible
+
+\section{Graph Laplacian}
+\label{sec:laplacian}
+
+The combinatorial (unnormalized) graph Laplacian of a weighted graph $G$ is defined
+as
 \begin{equation}
-M_s = D^{1/2} M D^{-1/2}
+\mathbf{L} = \mathbf{D} - \mathbf{W}
+\label{eq:unnormalized-laplacian}
 \end{equation}
 
-Therefore $M$ and $M_s$ share the same eigenvalues. Since $M_s$ is symmetric and diagonalizable, its corresponding set of eigenvectors $\{\mathbf{v}\}$ forms an othonormal basis for $\mathbb{R}^n$. We can write the left and right eigenvectors of $M$ in terms of  $\{\mathbf{v}\}$ as follow:
+and corresponds to the symmetric matrix
 \begin{equation}
-\phi_j = v_j D^{1/2} \mbox{ and } \psi_j = v_j D^{-1/2}
+L(u,v) = 
+\begin{cases}
+d_v & \mbox{if $u = v$,} \\
+-1 & \text{if $u$ and $v$ are adjacent,} \\
+0 & \text{otherwise}
+\end{cases}
 \end{equation}
 
-Since $M$ is a stochastic matrix, we can return to our initial random walk view where each $M_{ij}$ specify the one-step transition probabilities.During the graph construction phase, assume that $\epsilon$, or equivalently the number of nearest neighbours, is large enough so that $G$ is connected. $M$ is then irreducible and aperiodic. The Perron-Frobenius theorem tells us that $\lambda_0 = 1$ with a unique left eigenvector $\phi_0$. Furthermore, $\phi_0$ is the stationary distribution for $M$ and can be written explicitly as:
-\begin{equation}
-\phi_0(x_i) = \frac{D_{ii}}{\sum_{j}D_{jj}}
-\end{equation} 
+Where $\mathbf{D} = \text{diag}(d_1, d_2, \dots, d_n)$ and $\mathbf{W}$ are the
+diagonal degree and weight (adjacency) matrix for $G$ respectively.
 
-Taking the spectral decomposition of $M$, we express the probability distribution $p(t, y|x)$ as:
+When stochastic matrices are being manipulated, it is customary to work with the
+\textit{normalized}
+version of the Laplacian such that
 \begin{equation}
-\label{eq:prob-eig}
-p(t, y|x) = \phi_0(y) + \sum_{i\geq 1} \psi_i(x) \lambda_i^t \phi_i(y) 
-\end{equation} 
+\laplacian = \mathbf{D}^{-1/2} \mathbf{L} \mathbf{D}^{-1/2} = \mathbf{I} -
+\mathbf{D}^{-1/2} \mathbf{W} \mathbf{D}^{-1/2}
+\label{eq:normalized-laplacian}
+\end{equation}	
 
-We could measure the distance between two points from the original state-space by considering the dissimilarity between their respective probability distributions given in equation \ref{eq:prob-eig}.
+where $\mathbf{L}$ is the unnormalized Laplacian defined in equation
+\ref{eq:unnormalized-laplacian}.  The elements of the matrix $\laplacian$ then become
 
 \begin{align}
-\label{eq:prob-dist}
-D^2(x_0, x_1) &= || p(t, y|x_0) - p(t, y|x_1) ||^2_w \\
-&= \sum_{y} (p(t, y|x_0) - p(t, y|x_1))^2 w(y) \notag
+\laplacian(u,v) = 
+\begin{cases}
+1 & \text{if $u = v$ and $d_v \neq 0$,} \\
+-\frac{1}{\sqrt{d_u d_v}} & \text{if $u$ and $v$ are adjacent,}\\
+0 & \text{otherwise}
+\end{cases}
 \end{align}
 
-$w(y)$ is a weighting term meant to take into account the local density at $y$. 
-If we set $w(y) = 1/\phi_0(y)$ low density points will receive more weight. Furthermore, one could establish with \eqref{eq:prob-eig} and this choice of weighting the equivalence of  \eqref{eq:prob-dist} to the Euclidean distance in diffusion map space. Replacing \eqref{eq:prob-eig} into \eqref{eq:prob-dist}, we get:
+Clearly, $\laplacian$ is also symmetric since
+\begin{align}
+\laplacian^\transpose = \left(\mathbf{D}^{-1/2} \right)^\transpose \mathbf{L}^\transpose \left( \mathbf{D}^{-1/2} \right)^\transpose = \laplacian
+\end{align}
+
+The spectral theorem for symmetric matrices \cite{Watkins2010} also ensures that
+$\laplacian$ only has real eigenvalues. Furthermore, eigenvectors corresponding to
+distinct eigenvalues must be orthogonal.
+
+The normalized Laplacian is closely related to the transition matrix $P$ of the random
+walk process presented in section \ref{sec:random-walk}. It can be seen through the
+identity 
+
+\begin{equation}
+\mathbf{I} - \laplacian = \mathbf{D}^{-1/2} \mathbf{W} \mathbf{D}^{-1/2}
+\end{equation}
+
+that
 
 \begin{align}
-D^2(x_0, x_1) &= \sum_y \left(\sum_{i \geq 1} \psi_i(x_0) \lambda_i^t \phi_i(y) - \psi_i(x_1) \lambda_i^t \phi_i(y) \right)^2 \frac{1}{\phi_0(y)} \notag \\
-&= \sum_y \left( \sum_{i \geq 1} (\lambda_i^t(\psi_i(x_0) - \psi_i(x_1))\phi_i(y) \right) ^2 \frac{1}{\phi_i(y)}
+P &= \mathbf{D}^{-1/2} \left( \mathbf{I} - \laplacian \right) \mathbf{D}^{1/2} \label{eq:rw-similarity} \\
+ &= \mathbf{D}^{-1/2} \left( \mathbf{D}^{-1/2} \mathbf{W} \mathbf{D}^{-1/2} \right) \mathbf{D}^{1/2} \notag \\
+ &= \mathbf{D}^{-1} \mathbf{W} \notag
 \end{align}
 
-\section{Spectral Graph Clustering}
+It can be seen from equation \ref{eq:rw-similarity} that $P$ is similar (in the
+linear algebra sense) to $\mathbf{I} - \laplacian$. It follows that they also share
+the same eigenvalues and the right eigenvectors of $\mathbf{I} -\laplacian$ can be
+obtained from the eigenvectors of $P$ by multiplying them by $\mathbf{D}^{1/2}$
 
+\begin{align}
+P\mathbf{v} &= \lambda \mathbf{v} \notag \\
+\mathbf{D}^{-1/2} \left( \mathbf{I} - \laplacian \right) \mathbf{D}^{1/2} \mathbf{v}  &= \lambda \mathbf{v} \notag \\
+\left( \mathbf{I} - \laplacian \right) \mathbf{D}^{1/2} \mathbf{v}  &= \lambda \mathbf{D}^{1/2} \mathbf{v} \notag \\
+\left( \mathbf{I} - \laplacian \right) \mathbf{u} &= \lambda \mathbf{u} \\
+\mathbf{u} &= \mathbf{D}^{1/2} \mathbf{v}
+\label{eq:similarity-rw}
+\end{align}
+
+Because of this connection to random walks, some authors have defined the \termidx{normalized random walk Laplacian} as
+
+\begin{equation}
+\laplacian_{rw} = \mathbf{D}^{-1} L = \mathbf{I} - \mathbf{D}^{-1} \mathbf{W}
+\end{equation}
+
+% Difference operator
+The Laplacian can then be thought as an \termidx{operator} acting upon the space of
+functions $\mathcal{F} : V \to \mathbb{R}$, with $V$ denoting the vertex set.
+Expressing such functions as vector $f \in \mathbb{R}^{|V|}$, the normalized Laplacian
+can be shown to satisfy
+ 
+\begin{align}
+\mathcal{L}f(u) &= f(u) - \sum_{\substack{ v \\ u \sim v}} \frac{f(v)}{\sqrt{d_ud_v}} \notag \\
+ &= \frac{1}{\sqrt{d_u}} \left( \sum_{\substack{ v \\ u \sim v}} \frac{f(u)}{\sqrt{d_u}} - \frac{f(v)}{\sqrt{d_v}} \right)
+\label{eq:difference-operator}
+\end{align}
+
+The same could also be said about the normalized Laplacian generalized over weighted
+graphs, in which case
+\begin{equation}
+\laplacian f (u) = \frac{1}{\sqrt{d_u}} \left( \sum_{\substack{ v \\ u \sim v}} \frac{f(u)}{\sqrt{d_u}} - \frac{f(v)}{\sqrt{d_v}} \right) w_{uv}
+\end{equation}
+
+where $w_{uv}$ denotes the edge weight between adjacent vertices $u$ and $v$. 
+
+An $n \times  n$ symmetric matrix $A$ is said to be positive semidefinite (PSD) if for any vector $x \in \mathbb{R}^n, x^\transpose A x \geq 0$.  The normalized Laplacian admits a quadratic form from which the PSD property becomes clear
+\begin{align}
+f^\transpose \laplacian f &= f^\transpose \left( \mathbf{I} - \mathbf{D}^{-1/2} \mathbf{W} \mathbf{D}^{-1/2} \right) f \notag \\
+&= f^\transpose f - f^\transpose \mathbf{D}^{-1/2} \mathbf{W} \mathbf{D}^{-1/2} f \notag \notag \\
+&= \sum_{i} f_i^2 - \sum_{i} \frac{f_i}{\sqrt{d_i}} \sum_j w_{ij} \frac{f_j}{\sqrt{d_j}} \notag \\
+&= \frac{1}{2} \left( \sum_i f_i^2 - 2 \sum_{i,j} \frac{f_i}{\sqrt{d_i}} \frac{f_j}{\sqrt{d_j}} w_{ij} + \sum_j f_j^2 \right) \notag \\
+&= \frac{1}{2} \sum_{ij} \left(  f_i^2 -2\frac{f_i}{\sqrt{d_i}}\frac{f_j}{\sqrt{d_j}} w_{ij}  + f_j^2 \right) \notag \\
+&=  \frac{1}{2} \sum_{ij} w_{ij} \left(  \frac{f_i^2}{d_i} -2\frac{f_i}{\sqrt{d_i}}\frac{f_j}{\sqrt{d_j}} + \frac{f_j^2}{d_j} \right) \hspace{5mm} \text{by defn. $d_i = \sum_j w_{ij}$} \notag \\
+&= \frac{1}{2} \sum_{ij} w_{ij} \left( \frac{f_i}{\sqrt{d_i}} - \frac{f_j}{\sqrt{d_j}} \right)^2
+\label{eq:quadratic-form}
+\end{align}
+
+Clearly, $f^\transpose \laplacian f \geq 0$, and $\laplacian$ must be positive
+semidefinite. Under the definition of the combinatorial Laplacian, a similar quadratic
+form is induced \cite{Mohar91}
+
+\begin{equation}
+f^\transpose L f = \sum_{ij} w_{ij} (f_i - f_j)^2
+\end{equation}
+
+The quadratic form can be interpreted as a measure of smoothness of a  function over
+the graph. Intuitively, if $f$ is smooth over each pair of vertices, $f^\transpose
+\laplacian f$ will be small. On the other hand, if $f$ locally varies is a more drastic
+manner, this quantity will grow larger.  The weighting factor in equation
+\ref{eq:quadratic-form} also helps to understand how local density might influence this
+measure of smoothness. In regions of higher density, the proximity or similarity
+encoded through $w_{ij}$ is higher; hence the greater amplification of the $(f_i - f_j)^2$
+term. This property can be exploited in semi-supervised learning to encode the so-
+called \termidx{cluster assumption} and forcing the decision boundary to lie in low
+density regions \cite{Chapelle2002}.
+
+% induce regular norm , projection on eigenspace of laplacian produce smoothest
+%approximation, if piecewise smoot should be compressible in some basis
+% Relate quadratic form to smoothness and relation to continuous Laplace-Beltrami
+% Dilatation of operators and invariant subspaces. motivate approach: constant
+%dynamics. compressible in some basis
+
+\section{Laplacian of MDPs}
+Consider the \mrp induced by fixing a policy $\pi$ for an MDP and let $\mathbf{P}^\pi$
+denote the corresponding transition probability matrix. As shown earlier, a kind of
+Laplacian closely related to the normalized Laplacian can be obtained from the transition
+matrix of a random walk process. Clearly, $\mathbf{P}^\pi$ also defines a stochastic
+matrix encoding the dynamics proper to policy $\pi$ and the notion of Laplacian can
+naturally be extended for MDPs. 
+
+\begin{defn}
+Given a transition probability matrix $\mathbf{P}^\pi$ underlying an MDP for a fixed
+policy, the \termidx{Laplacian of an MDP} is
+\begin{equation}
+\laplacian^\pi = \mathbf{I} - \mathbf{P}^\pi
+\end{equation}
+\end{defn} 
+
+The Laplacian view of \mdps was adopted by a number of authors \cite{Lamond1989,
+Puterman1994, Filar2007} for the study of their induced Markov chains by the
+decomposition of the transition matrix through generalized inverse. While the term 
+Laplacian is not explicitly mentioned, their analysis fundamentally relies on the
+properties of the so-called \textit{Drazin} inverse \cite{Drazin1958} of $\mathbf{I} -
+\mathbf{P}^\pi$. The work on Proto-Value Functions (PVF) \cite{Mahadevan2009}
+exploits the concept of Laplacian (and terminology) for the purpose of representation
+and control.
+
+An obstacle to studying the spectrum of $\laplacian^\pi$ as defined above lies in the
+difficulty to obtain a diagonalization when the induced Markov chain is not
+reversible. Furthermore, the assumption that $\mathbf{P}^\pi$ is available from an
+existing MDP is problematic. Under the reinforcement learning framework, the transition
+matrix is generally unknown, thus calling for sampling-based methods to estimate it. In
+certain scenarios, the control problem is itself very hard to solve. Therefore, requiring
+the knowledge of $\laplacian^\pi$ to facilitate the problem would be nothing but a
+chicken-and-egg scenario. In the approach proposed in this work, the random walk
+Laplacian would be considered as replacement for practical purposes. Such substitution
+is also adopted in \cite{Mahadevan2009} for the same reasons.
+
+\section{Graph Partitioning}
+Through the study of the set of eigenvalues associated with the Laplacian, some remarkable results on 	the subgraph structures can be obtained. The set of problems concerning the optimality of graph cuts with regard to the size of their components is commonly referred to as \termidx{isoperimetric problems}. Edge cuts are of particular interest as it will be shown below that they relate to spectrum of $\laplacian$ through the so-called Cheeger constant. 
+
+% Define boundary
+Let $A, B \subseteq V$ be subsets of the vertices of a graph $G$ and $E(A, B)$ denote the set of edges having one end in $A$ and the other in $B$. It is also convenient to describe the set of edges having only one end point in $S \subseteq V$ as the \termidx{boundary} \cite{Chung1994}, \termidx{edge boundary}\cite{Chung1997} or \termidx{coboundary} \cite{Mohar91} of $S$, that is
+\begin{equation}
+\partial S = \{ \{u, v\} \in E : u \in S \text{ and } v \not \in S \}
+\end{equation}
+
+% Define conductance
+The \termidx{volume} for $S$ also corresponds to the sum of the degrees of its vertices
+\begin{equation}
+\vol(S) = \sum_{x \in S} d_x
+\end{equation}
+
+The \termidx{conductance} of $G$, also known as the \termidx{Cheeger constant} \cite{Chung1997}, is defined as
+
+\begin{equation}
+h_G = \min_S h_G(S) \hspace{2.5mm} \text{where} \hspace{2.5mm} h_G(S) = \frac{ |E(S, \bar{S}) |}{\min \left( \vol(S), \vol(\bar{S}) \right)}
+\label{eq:cheeger-constant}
+\end{equation}
+
+The \termidx{Cheeger inequality} relates it to the spectrum of $\laplacian$ as follow \cite{Chung1997}
+\begin{lem}
+\begin{equation}
+2h_g \geq \lambda_1 > \frac{h_g^2}{2}
+\end{equation}
+\end{lem}
+
+The more general graph partitioning problem can be better understood first in terms of
+the graph bipartitioning one. A natural attempt at solving this problem would be to
+express it under a \textsc{min-cut} formulation which could be solved in time
+$\mathcal{O}(n^3)$ using the Ford-Fulkerson algorithm \cite{FordFulkerson1956}. The
+resulting partitions however tend to be highly imbalanced and in certain cases can
+degenerate to singleton partitions \cite{Hagen1992}. A related problem to consider is
+then the \textsc{minimum-width bisection} which attempts at finding a minimum cut
+with partitions of equal size. Unfortunately, the problem was shown to be
+$\mathcal{NP}$-complete by \cite{Garey1976}. A natural response is then to relax the
+optimization criterion in such a way to maintain balanced partitions without requiring
+them to be of same size. The \termidx{ratio-cut} criterion is defined as \cite{Chuen1989, Chuen1991, Hagen1992} 
+
+\begin{equation}
+RCut(S) = \min_S \frac{|E(S, \bar{S})|}{|S| \cdot |S'|}
+\end{equation}
+
+and is very much related to the modified Cheeger constant \ref{eq:cheeger-constant}
+also called the \termidx{isoperimetric number} \footnote{Although some authors seems
+to make no distinction between the terms \cite{ShiMalik2000, Levin2008},
+\cite{Chung1997} shows in chapter 2 how they relate differently to the eigenvalues of
+$\laplacian$.}. Once again,  finding the minimum ratio cut is also $\mathcal{NP}$-
+complete but a spectral relaxation based on the combinatorial Laplacian (see equation
+\ref{eq:unnormalized-laplacian}) is proposed in \cite{Hagen1992}.
+
+A similar measure called the \termidx{normalized cut} was made popular in \cite{ShiMalik2000} and considers
+
+\begin{equation}
+NCut(S) = \frac{|E(S, \bar{S})|}{\vol(S)} + \frac{|E(S, \bar{S})|}{\vol(\bar{S})}
+\label{eq:ncut}
+\end{equation}
+
+Just as the ratio cut, the normalized cut also falls short of an exact solution which is not
+$\mathcal{NP}$-complete \cite{ShiMalik2000}. The \textit{normalized} qualification in
+the name \textit{normalized cut} can however seem misleading as it might imply that
+the normalized Laplacian as defined in equation \ref{eq:normalized-laplacian} is directly
+exploited. Indeed, the optimization problem is first set \cite{Luxburg2007} as
+\begin{align}
+\min_A \mathbf{f}^\transpose \left( \mathbf{D} - \mathbf{W} \right) \mathbf{f} \\
+\text{subject to} \hspace{2.5mm} \mathbf{D} \mathbf{f} \perp \indicator, \hspace{2.5mm}  \mathbf{f}^\transpose \mathbf{D} \mathbf{f} = \vol(V) \notag \\
+f_i = \begin{cases}
+\sqrt{\frac{\vol(A)}{\vol(\bar{A})}} & \text{if $v_i \in A$} \\
+-\sqrt{\frac{\vol(\bar{A})}{\vol(A)}} & \text{if $v_i \in \bar{A}$} 
+\end{cases} \notag
+\end{align}
+
+where $\mathbf{D} - \mathbf{W}$ can be recognized to be the combinatorial Laplacian
+as defined in equation \ref{eq:unnormalized-laplacian}.  By relaxing $\mathbf{f}$ to 
+values in $\mathbb{R}$ instead of discrete ones and setting $g = \mathbf{D}^{1/2}
+\mathbf{f}$, the problem becomes
+
+\begin{align}
+\min_{g \in \mathbb{R}^{|V|}} \mathbf{g}^\transpose\mathbf{D}^{-1/2}\left( \mathbf{D} - \mathbf{W} \right) \mathbf{D}^{-1/2} g \\
+\text{subject to} \hspace{2.5mm} \mathbf{g} \perp D^{1/2} \indicator, \hspace{2.5mm}  \| \mathbf{g} \|^2 = \vol(V) \notag \\
+\end{align}
+
+Under this form, the normalized Laplacian $\laplacian$ (equation 
+\ref{eq:normalized-laplacian}) finally appears. By the Rayleigh-Ritz theorem, this
+quantity is minimized when $\mathbf{g}$ equals the second eigenvector of $\laplacian$
+\cite{Chung1997}. From the real vector $g$, the partition membership can be recovered
+by thresholding its components. The problem of multi-partitioning or \textit{k-way} partitioning can be solved by applying the spectral bipartitioning approach described above in a top-down recursive manner in each partition.
+
+The normalized cut criterion not only seems to provide better empirical results, but also
+provides an intuitive interpretation in terms of random walks. Recall the connection
+drawn from $\mathbf{I} - \laplacian$ to the normalized random walk Laplacian $P$ in
+equation \ref{eq:rw-similarity} where they were shown to be similar. Therefore, if
+$\lambda$ is an eigenvalue of $\laplacian$, then $1 - \lambda$ must be an eigenvector
+of $P$. 
+
+It is shown in \cite{Shi2001} how this can be further exploited to express the Ncut
+criterion in terms of probability distributions from a random walk process over the
+graph. The stationary distribution of a random walk on a connected, non-bipartite graph
+can be shown \cite{Levin2008} to be equal to
+\begin{equation}
+\pi_i = \frac{d_i}{\vol(V)}
+\end{equation}
+
+The probability of transitioning from a partition $A$ to $B$ if at the stationary distribution the initial state is in $A$, is written as
+\begin{equation}
+P(A \to B | A) = \frac{\sum_{x \in A, y \in B} \pi(x) P(x, y)}{\pi(S)}
+\label{eq:rw-pr}
+\end{equation}
+
+which, for a random walks, boils down to 
+\begin{equation}
+P(A \to B | A) = \frac{\sum_{x \in A} d_x}{\vol(A)}
+\end{equation}
+
+From equation \ref{eq:rw-pr} and \ref{eq:ncut}, it is then easy to see that
+\begin{equation}
+NCut(S) = P(S \to \bar{S} | S) + P(\bar{S} \to S | \bar{S})
+\end{equation}
+
+Interestingly, \cite{Levin2008} calls this measure in \ref{eq:rw-pr} the
+\termidx{bottleneck ratio} and defines the \termidx{bottleneck ratio for a Markov chain}
+as 
+\begin{equation}
+\Phi_\star = \min_{S\; : \;\pi(S) \leq \frac{1}{2}} P(S \to \bar{S} | S)
+\end{equation}
+which corresponds to the Cheeger constant presented in equation 
+\ref{eq:cheeger-constant}. Such a quantity happened to have been studied intensively as
+a way to bound the \termidx{mixing time} of Markov chains through the notion of
+\termidx{conductance} (a term referring to the same Cheeger constant or the bottleneck
+ratio presented here). The notion of mixing time can described intuitively as the number
+of steps necessary for Markov chain to reach its stationary distribution. Since it is the asymptotic behavior of some Markov chain that is involved, the number of steps involved would not be finite. It is therefore customary to define the notion of mixing time as being \textit{close to} the steady-state distribution \cite{Jerrum1988}.
+
+The smaller the conductance is, the longer the chain is expected to \textit{mix}.
+Furthermore, the Markov chain would spend more time within a given partition of the
+graph and with lower probability, transition to different adjacent partition. It can then be
+understood that low conductance would also result in lower probabilities of inter
+partition jumps.
+
+It has been presented above how the second smallest eigenvector of $\laplacian$
+minimizes the relaxed $NCut$ criterion and can also bound the Cheeger inequality
+\ref{eq:cheeger-constant}. Therefore, it comes as no suprise to see it appearing in many
+bounds on the mixing time under the form of the \termidx{spectral gap} $1 - \lambda_1$ The interested reader is referred to \cite{Jerrum1988, Lovasz1996,
+Levin2008} for some of these results. 
+ 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Building Options
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Building Options}
+Explain very intuitively what good options should be. They should be compressible, 
+allow compression in the time dimension. Explain that through random walk, we
+are just trying to analyze the transition structure associated with the optimal policy.
+Fast mixing is just a proxy to what could be compression candidates. 
+
+Puterman classification of MPD. Weakly communicating. We are looking for closed set of states with transient states under every policy.
+
+Multichain two or more irreducible recurrent classes.
+
+An MDP is weakly communicating if and only if there exists a randomized
+stationary policy which induces a Markov chain with a single closed irreducible
+class and a set of states which is transient under all stationary policies.
+
+Terminology : \cite{Platzman1977}
+Decomposition into ergodic subchain \cite{Fox1968}
+\cite{Ross1991}
+
 \section{Graph Construction}
 %\subsection{Nearest Neighbors Graph}
 %\subsection{Relative Neighborhood Graph}
