@@ -227,41 +227,42 @@ approach proposed here.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Sequential Decision Making under Uncertainty}
 
+
 \section{Markov Chains}
 
 A discrete-time stochastic process is a family of random variables $\{ X(t), t \in T\}$
-(\rvs) indexed by a \textit{time} parameter $t \in \mathbb{N} = \{0, 1, 2,...\}$. The
-value of $X_n$ is referred to as the \textit{state} of the process. When the family of
-random variables is defined over a probability space for which the sample space
-$\Omega$ is discrete, we say that the stochastic process is \textit{discrete-valued}.
+(\rvs) indexed by a time parameter $t \in \mathbb{N} = \{0, 1, 2,...\}$. The
+value of $X_n$ is referred to as the \termidx{state} of the process. When the family of
+random variables is defined over a discrete sample space
+$\Omega$, the stochastic process is said to be \textit{discrete-valued}.
 Stochastic processes are useful for modelling probabilistic phenomenon involving in
-time such as the evolution of the price of a stock over the upcoming month, or the
+time such as the evolution of the price of a stock, or the
 number of connections to a web service over the day for example. Due to the inherent
 complexity many systems, it is often desirable to make simplifying assumptions to
-make the exercise tractable. One might then decide for example to treat the \rvs as
-\textit{independent and identically distributed} (iid) at the cost of loosing the ability to
+make the exercise tractable. One might then decide to treat the \rvs as
+\textit{independent and identically distributed} (iid) but only at the cost of loosing the ability to
 capture the correlation structure among the \rvs. The so-called \textit{Markov}
 assumption is often used when the iid property is deemed too restrictive, but is yet
 simple enough to make computation tractable.
 
 \begin{defn}
 A \termidx{Markov Chain} is a discrete-time and discrete-valued stochastic process
-that has the Markov Property. The Markov property implies that for all times $n \geq
+which possesses the Markov property. The Markov property implies that for all times $n \geq
 0$ and all states $i_0, \dots, i, j \in \Omega$:
 \begin{equation}
 P(X_{n+1} = j | X_0 = i_0, X_1 = i_1, ..., X_n = i) = P( X_{n+1} = j | X_n = i)
 \end{equation}
 \end{defn}
 
-The Markov property (or \textit{memoryless property}) could be explained in words by
+The Markov property (or \termidx{memoryless property}) could be stated simply by
 saying that the \textit{future is independent of the past, given the present state}.
-Therefore, knowing the value current value of $X_n = i$ is enough to characterize the
+Therefore, knowing the current value of $X_n = i$ is enough to characterize the
 future evolution of the stochastic process $\{X_{n+1}, X_{n+2}, \dots \}$ and the history
 $\{X_0, X_1,\dots, X_{n-1} \}$ can be discarded.
 
-A Markov chain is completely specified by the \textit{one-step} transition probabilities
-$p_{ij} = P(X_{n+1} = i | X_n = j)$ contained in its \textit{Markov} or
-\termidx{stochastic matrix}. For a finite state-space $\Omega$, we have:
+A Markov chain is completely specified by the one-step transition probabilities
+$p_{ij} = P(X_{n+1} = i | X_n = j)$ contained in its Markov or
+\termidx{stochastic matrix}. For a finite state-space $\mathcal{X}$, we have:
 \begin{equation}
 \mathbf{P} = \begin{bmatrix}
 p_{11} & p_{12} & \cdots & p_{1m} \\
@@ -281,8 +282,8 @@ Let $\mathbf{P}^\optimal$ denote the adjoint of $\mathbf{P}$. If $\mathbf{P}^\op
 Those elements of $\mathbf{P}$ for which $p_{ii} = 1$ are said to be
 \termidx{absorbing} and once entered, the Markov chain the never escapes.
 
-If the elements of $\mathbf{P} $ are independent of the time index, we say that the
-Markov chain is \termidx{time-homogeneous} and has \termidx{stationary transition
+If the elements of $\mathbf{P} $ are independent of the time index, the
+Markov chain is said to be \termidx{time-homogeneous} and has \termidx{stationary transition
 probabilities}. If this property is satisfied and one knows the transition probabilities of
 a Markov Chain, the problem of computing probability distributions is greatly
 simplified and can be succinctly expressed using matrix multiplication.  
@@ -298,7 +299,7 @@ P( \cdot, n | i) = e_i \mathbf{P}^n
 Here $e_i$ stands for the vector with zero components everywhere except of for its
 $i$th component set to 1. 
 
-Using the Chapman-Kolmogorov equation, we can classify a state $j$ as being
+Using the Chapman-Kolmogorov equation, a state $j$ is classified as being
 \termidx{accessible} from $i$ if $[\mathbf{P}^n]_{i,j} > 0$ for some $n \geq 0$. When
 the relation holds in both direction, $i$ and $j$ are said to \termidx{communicate}. If
 every possible pair of states can communicate, the Markov chain is classified as being
@@ -308,16 +309,15 @@ is, denote $T_j$ the time at which the chain returns to $j$, the recurrence prop
 expresses the fact that $P(T_j < \infty | X_0 = j) > 0$. When $E(T_j | X_0) < \infty$,
 state $j$ is said to be \termidx{positive recurrent}.
 
-These last definitions were essential in order to define the \termidx{ergodicity}
-property of Markov chains which holds a great importance in the analysis of Markov
-Decision Processes which we will see below. 
+These last definitions are essential for defining the \termidx{ergodicity}
+property which is a condition often assumed in the analysis of Markov Decision Processes which will be covered below. 
 
 \begin{defn}
 A Markov chain is ergodic if it is irreducible and positive recurrent.
 \end{defn}
 
 It occurs often that one is interested in knowing how a given probability distribution
-for $X_n$ would evolve as a function of $n$ in a Markov chain.  Denote the
+for $X_n$ would evolve in time.  Denote the
 distribution of $X_n$ by the row vector $\mu_n$ and the \termidx{initial distribution}
 by $\mu_0$. It can seen that the following relation hold
 \begin{equation}
@@ -331,8 +331,8 @@ X_{n-1} = i_{n-1})
 \end{align}
 and that our Markov chain is time-homogeneous ($\mathbf{P}$ is fixed).
 
-If it happens that the distribution of $\mu_n$ does not change with $n$, then we say
-that the Markov chain is \termidx{stationary}. 
+If it happens that the distribution of $\mu_n$ does not change with $n$, then 
+ the Markov chain is said to be \termidx{stationary}. 
 
 \begin{defn}
 A Markov chain said to be stationary if it satisfies $P(X_0 = i_0, X_1 = i_1, \dots, X_n
@@ -348,8 +348,8 @@ finding a vector $\pi$ such that
 The stationary distribution $\mathbf{\pi}^\intercal$ can thus be seen as the left
 eigenvector of $\mathbf{P}$ associated with the eigenvalue 1. Furthermore, it must be
 that $\sum_k \mathbf{\pi}_k = 1$ in order for $\pi$ to be a well-defined probability
-distribution. When the Markov chain reaches the stationary distribution, we say that it
-is in \termidx{steady-state} mode.
+distribution. When the Markov chain reaches the stationary distribution, it is said to be
+in its \termidx{steady-state} mode.
 
 An important characterization of the properties of stochastic matrices comes from the
 theory of nonnegative matrices in the form of the Perron-Frobenius theorem. First, the spectral radius of a square matrix is defined as 
@@ -390,13 +390,15 @@ have a complete spectrum of real eigenvalues of magnitude at most 1 and of the f
 % Markov Decision Processes
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Markov Decision Processes}
+Markov chains of the kind presented in the last section do not consider the influence of an external \textit{input} on its dynamics. The case of controlled Markov chains under the framework of \mdps is studied in this section. The theory of \mdps will lay the theoretical foundations for the problem of optimal sequential decision making for situated agents considered in Reinforcement Learning. The following presentation adopts most of the notion from \cite{Csaba2010}. 
+
 \begin{defn}
 \label{defn:mdp}
 A finite-action discounted \termidx{Markov Decision Process} (MDP) is a tuple
 $\mathcal{M} = \langle \mathcal{X}, \mathcal{A}, r, \mathcal{P},\gamma \rangle$ where
 $\mathcal{X}$ is a non-empty countable set of states, $\mathcal{A}$ is a finite state
 of actions, $\mathcal{P}$ is a transition probability kernel giving rise to a distribution
-$P(\cdot |x, a)$ over $\mathcal{X}$ given any $x \in \mathcal{X}$ and $a
+$P(\cdot |x, a)$ over $\mathcal{X}$ given any $x \in \mathcal{X}$ and $a \in
 \mathcal{A}$,  $r$ is the reward function $r: \mathcal{X} \times \mathcal{A} \mapsto
 \mathbb{N}$ and $\gamma \in [0, 1]$ is a discount factor.
 \end{defn}
@@ -405,9 +407,7 @@ A \termidx{deterministic policy} $\pi$ is a mapping $\pi : \mathcal{X} \mapsto
 \mathcal{A}$. In the theory of MDPs, stochastic policies of the form $\pi : \mathcal{X}
 \mapsto \Omega(\mathcal{A})$ are also object of study, in which case actions are
 drawn from a conditional probability distribution  over states according to $A_t \sim
-\pi(\cdot | X_t)$ (here $A_t$ and $X_t$ denote \rvs at time $t$). Markov policies thus
-describe a class of behaviors according to which a decision maker might be acting
-upon. 
+\pi(\cdot | X_t)$ (here $A_t$ and $X_t$ denote \rvs at time $t$). 
 
 Fixing a policy for an MDP has for effect to induce a \termidx{Markov Reward Process}
 (MRP) $\langle \mathcal{X}, \mathcal{R}^\pi, \mathcal{P}^\pi, \gamma \rangle$ with
@@ -416,14 +416,14 @@ kernel $P(\cdot | x) = P(\cdot | x, \pi(x))$. An MRP can be thought as a Markov 
 augmented with rewards over the set of states. The concepts of induced Markov
 chains and Markov Reward Processes are particularly important in the analysis of the
 dynamics of an MDP. At the level of the induced Markov chain of an MDP, the
-existence of a stationary distribution $\rho^\pi$ is not necessarily guaranteed.
+existence of a stationary distribution is not necessarily guaranteed.
 
 \subsection{Value Function}
 The notion of a value function is instrumental in supporting the principle of optimality
 that underlies the decision theoretic framework of MDPs. It is assumed in this context
 that a decision maker, or \textit{agent}, is acting in such a way as to optimize some
-intrinsic notion of \textit{goodness} of the exhibited behaviour. From to the definition
-\ref{defn:mdp} of an MDP, we use the reward function $r$ to express a quantity
+intrinsic notion of what \textit{good} behaviour is. From to the definition
+\ref{defn:mdp} of an MDP, the reward function $r$ is used to express a quantity
 known as the \termidx{return}
 
 \begin{defn}
@@ -453,15 +453,6 @@ x\right] , x \in \mathcal{X} \label{eq:value-function}
 \end{equation}
 \end{defn}
 
-%It is important to observe the following recursive property which stems from
-%equation \ref{eq:value-function}
-%\begin{align*}
-%V^\pi(x) &= \expectation \left[ R_{t+1} + \gamma \sum_{t=0}^\infty \gamma^t
-%R_{t+2}  \given X_0 = x\right] \\
-%V^\pi(x) &= \expectation \left[ R_{t+1} + \gamma V^\pi(X_1 = x_1) \given X_0 =
-%x\right]
-%\end{align*}
-
 An optimal behavior is achieved if the value function of its policy is optimal. An
 optimal value function $V^*: \mathcal{X} \mapsto \mathbb{R}$ is one which obtains
 the maximum possible expected return for every state.
@@ -482,7 +473,7 @@ A_0 = a \right], \; x \in \mathcal{X}, a \in \mathcal{A}
 \end{defn}
 
 If the action-value function yields the maximum expected return for every state
-action pair, we say that it is optimal and denote it by $Q^*$. One can go from the
+action pair, it is said to be optimal and denote it by $Q^*$. One can go from the
 action-value function to the value-function by noting that for finite-action MDP
 (definition \ref{defn:mdp})
 \begin{equation}
@@ -499,9 +490,8 @@ Q^*(x,a) = r(x,a) + \gamma \sum_{y \in \mathcal{X}} P(y, a, x) V^*(y), \; x \in
 \end{equation}
 
 \subsection{Bellman Equations}
-Similar to equation \ref{eq:vopt-to-qopt}, given an MDP $\mathcal{M} = \langle
-\mathcal{X}, \mathcal{A}, \mathcal{P}, \gamma \rangle$ we can write its so-called
-\termidx{Bellman equations}
+Similar to equation \ref{eq:vopt-to-qopt}, given an MDP, the  so-called 
+\termidx{Bellman equations} are written as
 
 \begin{equation}
 V^\pi(x) = r(x, \pi(x)) + \gamma \sum_{y \in \mathcal{X}} P(y, \pi(x), x) V^\pi(y)
@@ -510,9 +500,9 @@ V^\pi(x) = r(x, \pi(x)) + \gamma \sum_{y \in \mathcal{X}} P(y, \pi(x), x) V^\pi(
 
 The recursive formulation of the Bellman equations allows to relate the value of state
 to that of its possible successor states, weighted by their probability of occurrence in
-an average.  If we have a finite d-dimensional state space $\mathcal{X}$, $V^\pi$ and
+an average.  For a finite d-dimensional state space $\mathcal{X}$, $V^\pi$ and
 $r^\pi$ can be thought as a vectors in $\mathbb{R}^d$ with $\mathcal{P}$ being a
-transition matrix $\mathbf{P}: \mathbb{R}^{d \times d}$. We can then see that the
+transition matrix $\mathbf{P}: \mathbb{R}^{d \times d}$. It can be seen that the
 Bellman equations (\ref{eq:bellman-equations}) define a linear system of equations in
 $d$ unknows whose unique solution is $V^\pi$
 
@@ -520,14 +510,14 @@ $d$ unknows whose unique solution is $V^\pi$
 \mathbf{V}^\pi = \mathbf{r}^\pi + \gamma \mathbf{P}^\pi \mathbf{V}^\pi
 \end{equation}
 
-Solving for the left hand side we get
+Solving for the left hand side, 
 
 \begin{equation}
 \mathbf{V}^\pi = (\mathbf{I} - \gamma \mathbf{P}^\pi)^{-1} \mathbf{r}^\pi
 \label{eq:direct-value}
 \end{equation}
 
-Under the framework of reinforcement learning that we adopt in this work,
+Under the framework of reinforcement learning adopted in this work,
 $\mathbf{P}$ and $\mathbf{r}^\pi$ are not available \textit{a priori}, making the
 direct solution of \ref{eq:direct-value} impossible to compute. Furthermore, since
 matrix inversion is generally of the order of $\mathcal{O}(n^3)$, the computational
@@ -591,13 +581,12 @@ $T^\optimal V^\optimal = V^\optimal$.
 \subsection{Solving MDPs}
 
 The Banach fixed-point theorem introduced above laid out the foundations for the
-two main approaches to solving MDPs: the value and policy iteration algorithms. By
+two main approaches for solving MDPs: the value and policy iteration algorithms. By
 \textit{solving and MDP}, one generally refers to finding the optimal value function
 underlying an MDP. If the the value function found in that way is indeed optimal, an
 optimal policy can be derived by greedily picking the best action. These two main
 problems -- finding the value of a policy or finding an optimal policy -- are usually
-distinguished under the names of \termidx{prediction} (figure \ref{fig:prediction
-problem}) and \termidx{control} (figure \ref{fig:control-problem}). In the control
+distinguished under the names of \termidx{prediction} (figure \ref{fig:prediction-problem}) and \termidx{control} (figure \ref{fig:control-problem}). In the control
 problem, one tries to derive an optimal policy by considering the greedy policy with
 respect to the optimal value function (see \cite{Ross1983} for a proof).
 
@@ -611,8 +600,8 @@ respect to the optimal value function (see \cite{Ross1983} for a proof).
 \centering
 \input{fig/spaces}
 \caption{The policy evaluation problem consists in finding the value-function
-corresponding to a given policy $\pi$. We restrict our attention to the space of
-stationary policies $\Pi_{stat}$.}
+corresponding to a given policy $\pi$. The space of 
+stationary policies $\Pi_{stat}$ is only considered in this work.}
 \label{fig:prediction-problem}
 \end{figure}
 
@@ -641,7 +630,7 @@ policy improvement. The general idea goes as follow: from an initial policy $\pi
 compute its corresponding value function (policy evaluation) and derive the greedy
 policy $\pi_{k+1}$ from it (policy improvement), then repeat these two steps as
 necessary. Fixing the number of iteration to $k$, the policy computed by policy
-iteration at step $k$ can be shown to be not worse than the greedy policy computed
+iteration at step $k$ can be shown not to be worse than the greedy policy computed
 by value-iteration. Because of the policy evaluation step, policy-iteration is
 computationally more expensive. It plays however an important role in the Actor
 Critic architectures \cite{Sutton1984}.
@@ -650,8 +639,7 @@ The policy and value iterations algorithms belong to the class of algorithms kno
 \termidx{dynamic programming} (DP) methods. Assuming a perfect knowledge of the
 transitions dynamics and reward function, they can greatly reduce the computational
 burden compared to a direct policy search approach which would be of the order of
-$\left\vert \mathcal{X} \right\vert^{\left\vert \mathcal{A} \right\vert}$. We will
-however be interested in problems in which these assumptions are no longer valid and
+$\left\vert \mathcal{X} \right\vert^{\left\vert \mathcal{A} \right\vert}$. For the class of problems considered in this work, these assumptions would no longer be valid and
 additional techniques will have to be used. DP is still of great importance for the
 theoretical underpinning that it provides to the understanding of reinforcement
 learning approaches.
@@ -665,9 +653,7 @@ Reinforcement Learning (RL) considers the problem setting of a situated
 \termidx{agent} trying to learn to optimize a loss (return) from the direct experience
 provided by the \termidx{environment} (figure \ref{fig:rl}). Historically, the field has
 been influenced greatly by the work on trial-and-error learning from the field of
-psychology \todo{CITE}, consequently shaping the type of learning problems it tries to
-solve. RL hinges heavily upon the theory of \mdps introduced in the previous section,
-and shares the same goal as DP of solving the control problem. 
+psychology \cite{Sutton1998}, consequently shaping the type of learning problems it tries to solve. RL hinges heavily upon the theory of \mdps introduced in the previous section while sharing the same goal as DP of solving the control problem. 
 
 \begin{figure}
   \centering
@@ -695,7 +681,7 @@ off-policy Q-Learning algorithm will be presented.
 
 \subsection{Monte-Carlo}
 The Monte-Carlo approach to solving the control problem tries to estimate the value
-of a state by sampling online the return (equation \ref{eq:return}) directly from the
+of a state by online sampling of the return (equation \ref{eq:return}) directly from the
 environment or through simulated experience using a model. Working under the
 assumption of an episodic task, independent samples of return are averaged to
 obtain an estimate of the true expectation. According to the law of large number, as
@@ -704,7 +690,7 @@ estimator.
 
 The procedure described above is however not sufficient for solving the control
 problem and only answers the prediction one. In the absence of a model, it will be
-necessary to estimate the value of an action-value function. Since certain state
+necessary to estimate the value of an action-value function. Since certain state-
 action pair might be difficult to sample frequently enough in large state spaces, it
 is often assumed that the agent can be reset in some arbitrary state-action
 configuration (an \termidx{exploring start}). In practice, this assumption turns out to
@@ -732,14 +718,12 @@ be capable of doing off-policy learning.
 \subsection{Temporal Difference Learning}
 The main drawback in using Monte-Carlo methods in an on-line setting has to do with
 the need to wait for the complete execution of an episode in order to update the value
-function estimate. The Temporal Difference (TD) learning algorithm laid out	 the
-foundations of RL by using immediate prediction as target, a technique known as
+function estimate. The Temporal Difference (TD) learning algorithm was instrumental in making the RL approach practical. TD learning first showed how to use immediate prediction as target, a technique known as
 \termidx{bootstrapping}, instead of waiting for a full backup to be performed as with
 MC methods. The TD($\lambda$) is a extension of the original algorithm
 \cite{Sutton1984} that unifies DP and Monte-Carlo methods.
 
-Recalling the definition of the value function given in \ref{eq:value-function}, we have
-that for all $x \in \mathcal{X}$
+Recalling the definition of the value function given in \ref{eq:value-function}, for all $x \in \mathcal{X}$
 \begin{align}
 V^\pi(x) &= \expectation \left[ \sum_{t=0}^\infty \gamma^t R_{t+1}  \given  X_0 =
 x\right] \notag \\
@@ -793,8 +777,7 @@ An important extension to the original TD algorithm is the TD($\lambda$) family
 \termidx{Eligibility traces} act as kind of memory which has for effect to weight the
 propagated backups at a given state. Instead of updating the value function based on 
 a single n-steps estimate, TD($\lambda$) computes and an average, known as the
-$\lambda$-return, over a range of multi-step predictions of the return. The multi
-step discounted return is first defined as
+$\lambda$-return, over a range of multi-step predictions of the return. The multi-step discounted return is first defined as
 \begin{equation}
 \mathcal{R}_{t:k} = \sum_{s=t}^{t+k} \gamma^{s-t}R_{s+1} +
 \gamma^{k+1}\hat{V}_t(X_{t+k+1})
@@ -896,22 +879,22 @@ $\epsilon$-greedy could once again be used for that task.}
 \section{State-Abstraction}
 The algorithm presented so far assumed \textit{tabular} updates rules where value or
 action-value functions are expressed as vectors and matrices respectively. For many
-problems, the set of states might have infinite cardinality or simply too large to fit in
+problems, the set of states might have infinite cardinality or be simply too large to fit in
 memory. Furthermore, as the number of entries increases, the computational expense
-would also increase accordingly. It matters then to seek for a representation of the
+ also increases accordingly. It matters then to seek for a representation of the
 value function capable of generalizing across (possibly unseen) states or state-action
 pairs.
 
 By expressing the value function as a parametrized function, the incremental updates
 would now be performed upon the entries of some parameter vector $\theta$. For
-large state spaces, the number of components in $\theta$ will be much smaller than
+large state spaces, the number of components in $\theta$ would be much smaller than
 the number of possible states -- rendering the problem more tractable. Value function
 approximation could then be seen as an instance of a supervised learning problem
 with a training set consisting of pairs of state and samples of the return (one-step TD,
 or full Monte-Carlo).
 
 Any existing method from supervised learning could potentially be used for that tasks:
-neural networks, k-nearest neighbor for regression for example. TD-Gammon
+neural networks, k-nearest neighbors for regression for example. TD-Gammon
 \cite{Tesauro1995} is deemed as one of the great success story in the field and made 
 use of neural networks for value function approximation. In this work, the attention
 will be mainly drawn upon the so-called \textit{linear methods}. A simple, but yet
@@ -972,8 +955,7 @@ $x \leftarrow x^\prime$
 \label{alg:linear-tdlambda}
 \end{algorithm}
 
-TD($\lambda$) with linear function approximation (algorithm \ref{alg:linear
-tdlambda}) can be shown to converge under the usual RM conditions on the $\alpha$
+TD($\lambda$) with linear function approximation (algorithm \ref{alg:linear-tdlambda}) can be shown to converge under the usual RM conditions on the $\alpha$
 parameter \cite{Tsitsiklis1997}.
 
 \subsection{Basis functions}
@@ -1085,7 +1067,7 @@ scenarios such as preparing coffee, going on a camping trip, changing a bicycle 
 etc. When preparing an Espresso, a Barista might need to make use of her
 \textsc{turn-on-the-espresso-maker} ability, followed by \textsc{grind-coffee-beans},
 \textsc{tamp-the-espresso}, \textsc{lock-the-portafilter}, and \textsc{pull-a-shot}.
-Capitalized expressions where used in this last example to highly the fact that these
+Capitalized expressions where used in this last example to highlight the fact that these
 \textit{actions} last arbitrary amount of time and should rather be seen as
 \textit{closed-loop} policies. Although the tasks of preparing coffee might seem trivial
 even for the inexperienced, it does rely on a complicated sequence of \textit{atomic}
@@ -1095,14 +1077,14 @@ knowledge.
 Many formalisms have been proposed to cast this problem efficiently in the framework
 of reinforcement learning: the MAXQ method \cite{Dietterich1998} and Hierarchical
 Abstract Machines (HAM) \cite{Parr1997} or Macro-Actions \cite{Hauskrecht1998} for
-example. These other approaches will not be covered here as the options framework of 
+example. These other approaches will not be covered as the options framework of 
 \cite{Sutton1999} will be adopted in this work. For a survey of the earlier attempts, the
 interested reader is referred to \cite{StolleThesis2004, Sutton1999}.
 
 \section{Options Framework}
 \begin{defn}
-An \termidx{Option} is a triple $\langle \mathcal{I} \subseteq \mathcal{X},
-\mathcal{\pi} : \mathcal{X} \to \Omega(\mathcal{A}), \beta : \mathcal{X} \to [0, 1]
+An \termidx{Option} is a triple $\langle \mathcal{I} \subseteq \mathcal{X},\;
+\mathcal{\pi} : \mathcal{X} \to \Omega(\mathcal{A}),\; \beta : \mathcal{X} \to [0, 1]
 \rangle$ consisting of an initiation set, a policy $\pi$ and a termination condition
 $\beta$.
 \end{defn}
@@ -1219,9 +1201,8 @@ had not yet beaten the pathways rigorously enough that the authors of
 
 As opposed to the more general SMDP Q-Learning algorithm of equation
 \ref{eq:smdp-qlearning}, Macro Q-Learning treats macro-actions (options in this case)
-and primitive actions separately: an SDMP update rule is applied for macro-actions
-while primitive actions are updated using \ref{eq:qlearning-update}. Clearly, SMDP Q
-learning encompasses Macro Q-Learning and can be expressed identically as
+and primitive actions separately: an SMDP update rule is applied for macro-actions
+while primitive actions are updated using \ref{eq:qlearning-update}. Clearly, SMDP Q-learning encompasses Macro Q-Learning and can be expressed identically as
 
 \begin{equation}
 Q_{t+1}(x, o) \leftarrow Q_{t}(x, o) + \alpha \left[ \mathcal{R} + \gamma^k
@@ -1286,20 +1267,16 @@ about the MAXQ framework.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{From Structure to Dynamics}
 
-At first blush, it might be tempting to overlook the ramifications of graph theory
-into that of \mdps. As it will be shown below, spectral graph theory provides a powerful
-perspective for studying the dynamical properties of Markov chains. The graph
-representation of Markov chain will act as a proxy so that matrix theory and linear
-algebra will suffice to provide rich results in a concise manner. Some of the early
-applications making use of this connection can be traced back to the
-work of Simon and Ando in \cite{SimonAndo1961}.\todo{Talk about Fiedler 73}
+Graph theory has deep ramifications in almost every mathematical fields. It does not come as a surprise then to consider taking a graph perspective of \mdps. As it will be shown below, spectral graph theory provides powerful
+tools for studying the dynamical properties of Markov chains. The graph
+representation of Markov chains will make matrix theory and linear
+algebra sufficient tools for proving rich results elegantly. Some of the early
+applications making use of this connection can be traced back to some early work by \cite{SimonAndo1961, DonathHoffman1973, Fiedler1973}.
 
 Spectral graph theory will provide the theoretical justification for the heuristic approach
 to options discovery algorithm proposed in this work. This presentation should be seen
-as an initial foray towards a better theoretical grounding of the bottleneck concept to
-which belongs this algorithm. The notion of random walk on an arbitrary graph
-$\mathcal{G}$ will first be introduced, followed by a characterization of the convergence
-time to a stationary distribution in terms of mixing time. It will be then shown how
+as an initial foray towards a better theoretical grounding of the bottleneck concept. The notion of random walk on an arbitrary graph
+$\mathcal{G}$ will first be introduced, followed by a characterization of the properties of the graph Laplacian and its representation for MDPs. It will be then shown how
 graph partitioning can be achieved on the basis of the dynamics induced by the random
 walk process. Finally, it will be argued that the mixing time property of MDP-induced
 graphs is relevant to the problem of options discovery and spectral graph partitioning
@@ -1493,6 +1470,7 @@ Given a transition probability matrix $\mathbf{P}^\pi$ underlying an MDP for a f
 policy, the \termidx{Laplacian of an MDP} is
 \begin{equation}
 \laplacian^\pi = \mathbf{I} - \mathbf{P}^\pi
+\label{eq:mdp-graph-laplacian}
 \end{equation}
 \end{defn} 
 
@@ -1662,32 +1640,107 @@ minimizes the relaxed $NCut$ criterion and can also bound the Cheeger inequality
 bounds on the mixing time under the form of the \termidx{spectral gap} $1 - \lambda_1$ The interested reader is referred to \cite{Jerrum1988, Lovasz1996,
 Levin2008} for some of these results. 
  
+\section{Motivation}
+
+The definition of what makes for \textit{interesting} options has remained vaguely
+defined throughout the vast body of work on bottleneck-like approaches in
+reinforcement learning. The intuition developed in this chapter might provide further
+development on this question. After having distilled the essence of the bottleneck
+concept through the graph Laplacian, it is also easier to obtain an historical perspective
+along the work on \textit{nearly completely decomposable Markov chains}
+
+It has been shown in this chapter how the optimal bipartitioning problem relates to the
+cheeger constant or bottleneck ratio which in turn, provide bounds on the mixing time
+of Markov chains. It might seem then that bottlenecks allow for the discovery of fast
+mixing regions of the state space. In the planning problem, fast mixing might translate
+into computational speedup, making policies \textit{simpler} to compute in those
+regions. Efficient random sampling techniques of large state spaces are also often
+concerned fast mixing time \cite{Boyd2004}. In reinforcement learning, the same
+problem would be translated under the question of designing smart \textit{exploration}
+strategies. Optimal partitioning of the MDP-induced graph Laplacian could thus help
+identifying regions of fast mixing time and create options tailored for exploration.
+
+It also seems that good options are those which are intrinsically \textit{simple}, acting as
+elementary building building blocks of increasingly complex hierarchies. Traces of this
+ideal of simplicity can be observed under different forms. For example, its is
+known from\cite{Shi2001}, that the stochastic matrix $P$ has piecewise constant
+eigenvectors with respect to the $NCut$ partitioning. This suggests that optimal
+partitions can be described more succinctly (simply). The authors also note the
+potential connection with the notion of \termidx{lumpability} introduced in
+\cite{Kemeny1976}. Lumpability essentially consists in aggregating states of similar
+dynamics so as to simplifying Markov chains when confronted with the curse of
+dimensionality. 
+
+The idea of matrix decomposition was initiated in \cite{AndoFisher1963} from
+economics for the study of linear dynamical systems with \textit{nearly decomposable}
+structures. The class of Markov chains with strong intra-cluster interactions and weak
+inter-cluster ones has then been studied under the name of \textit{nearly completely
+decomposable Markov chains} (NDMC) \cite{Gaitsgori1975} and covered by
+\cite{Courtois1977} in a book on queuing theory. The control problem for Markov chains
+with such structure was considered in \cite{Teneketzis1980, Delebecque1981,
+Phillips1981, Coderch1983} building upon the Courtois' pertubational aggregation
+decomposition. This approach treats the \textit{slower} inter-cluster transitions as
+matrix perturbations. Similar ideas are also brought closer to the framework of \mdps
+with \cite{Haviv1985, Aldhaheri1991, Zhang1997}. 
+
+From an information theoretic point of view, lumpability can be seen as a lossy
+compression scheme \cite{Lindqvist1978}, \cite{Watanabe1960}. On the more general
+topic of graph clustering, the  \textsc{infomap} algorithm of \cite{Rosvall2008} also
+exploits this compression intuition. By taking random walks in the graph, their
+algorithms seeks a partitioning of \textit{minimum description length}. More recently,
+\cite{Deng2011} gave a characterization of the optimal aggregation of NDMC systems in
+terms of the Kullback-Leibler divergence. They show that optimal partitioning yields
+aggregates of maximum \textit{predictability} as measured by the mutual information
+between $X(t)$ and $X(t+1)$. It should be stressed that the applicability of these results
+were constrained to the uncontrolled case. Similar derivations could be attempted in the
+controlled case only by considering the rate distortion for a fixed value function such as
+in \cite{Still2012}.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Building Options
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Building Options}
-Explain very intuitively what good options should be. They should be compressible, 
-allow compression in the time dimension. Explain that through random walk, we
-are just trying to analyze the transition structure associated with the optimal policy.
-Fast mixing is just a proxy to what could be compression candidates. 
 
-Puterman classification of MPD. Weakly communicating. We are looking for closed set of states with transient states under every policy.
+It was shown in the last chapter how spectral graph theory can offer a dual perspective
+in studying the dynamics of Markov chains. For the problem of options discovery, the
+properties of interest in the graph Laplacian are those which could capture
+\textit{temporal regularities}. An algorithm seeking this principles is presented in this
+chapter. As opposed to the other similar algorithms \cite{Menache2002, Mannor2004,
+Mathew2012, Bouvrie2012}, a continuous state space is assumed for the MDPs. This
+brings significant challenges in terms of graph representation and computational
+complexity which had not been tackled before.
 
-Multichain two or more irreducible recurrent classes.
+The main distinguishing factor between the control techniques developed in
+reinforcement learning and those found in traditional stochastic dynamic programming
+is that the latter assumes the knowledge of the transition and reward probabilities. The
+graph Laplacian underlying an MDP (equation \ref{eq:mdp-graph-laplacian}) must then
+be assumed to be inaccessible in the RL setting. By sampling a large number of state
+action transitions, the dynamics could be recovered in the limit but the curse of
+dimensionality would render this approach hopeless.
 
-An MDP is weakly communicating if and only if there exists a randomized
-stationary policy which induces a Markov chain with a single closed irreducible
-class and a set of states which is transient under all stationary policies.
-
-Terminology : \cite{Platzman1977}
-Decomposition into ergodic subchain \cite{Fox1968}
-\cite{Ross1991}
+The replacement strategy adopted here consists in building a \textit{proximity graph}
+over sampled states and studying the dynamical properties of random walks over this
+graph rather than the MC induced by fixing an optimal policy for an MDP. This reduction is not without consequence as the precious optimality-preserving transitions of $\mathbf{P}_\pi$ are completely ignored. The random walk Laplacian will however still capture relevant geometrical features of the state space, which in certain environments,  
+also reflect optimal structures of the solution space. \cite{Mahadevan2007} also faced a similar trade-off but argues for its merits in transfer learning.
 
 \section{Graph Construction}
 %\subsection{Nearest Neighbors Graph}
 %\subsection{Relative Neighborhood Graph}
 %\subsection{Grabriel Graphs}
 %\subsection{Beta-Skeleton}
+\begin{figure}
+  \centering
+      \subbottom[Mutual]{%
+    \includegraphics[width=0.45\linewidth]{fig/Mutual-graph.eps}}
+  \subbottom[Symmetric Graph]{%
+    \includegraphics[width=0.45\linewidth]{fig/Symmetric-graph.eps}}
+  \subbottom[Gabriel]{%
+    \includegraphics[width=0.45\linewidth]{fig/Gabriel-graph.eps}}
+  \subbottom[RNG]{%
+    \includegraphics[width=0.45\linewidth]{fig/RNG-graph.eps}}
+
+  \caption{Proximity Graphs}
+\end{figure}
 \section{Graph Clustering}
 % Walktrap algorithm
 \section{Initiation and Termination}
