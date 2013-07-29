@@ -1724,26 +1724,128 @@ graph rather than the MC induced by fixing an optimal policy for an MDP. This re
 also reflect optimal structures of the solution space. \cite{Mahadevan2007} also faced a similar trade-off but argues for its merits in transfer learning.
 
 \section{Graph Construction}
-%\subsection{Nearest Neighbors Graph}
-%\subsection{Relative Neighborhood Graph}
-%\subsection{Grabriel Graphs}
-%\subsection{Beta-Skeleton}
-\begin{figure}
-  \centering
-      \subbottom[Mutual]{%
-    \includegraphics[width=0.45\linewidth]{fig/Mutual-graph.eps}}
-  \subbottom[Symmetric Graph]{%
-    \includegraphics[width=0.45\linewidth]{fig/Symmetric-graph.eps}}
-  \subbottom[Gabriel]{%
-    \includegraphics[width=0.45\linewidth]{fig/Gabriel-graph.eps}}
-  \subbottom[RNG]{%
-    \includegraphics[width=0.45\linewidth]{fig/RNG-graph.eps}}
 
-  \caption{Proximity Graphs}
+When dealing with a discrete state space, the task of estimating the underlying manifold structure is simplified compared to its continuous counterpart. It would indeed suffice to collect sample trajectories and setting graph edges between any two temporally successive states. In the continuous case, temporal ordering can be enough to reconstruct a single geodesic from a trajectory but merging many of them then becomes problematic. The state space being countably infinite, the probability of encountering the same state twice is null.  In the field of \textit{manifold learning}, common approach for estimating the low-dimensional manifold of a dataset is to build a so-called \termidx{proximity graph}. The same technique is adopted in this work for estimating the random walk Laplacian substituted in place of the true MDP Laplacian. 
+
+Proximity graphs arise from the general problem of extracting geometrical structure from a set of points in the plane. In machine learning, they are commonly found in non-linear dimensionality reduction techniques such as \cite{Tenenbaum2000, Roweis2000}, clustering \cite{Luxburg2007} or non-parametric classification \cite{Toussaint2012}. When assuming a manifold structure, the concept entails that in a small enough region around a point, the topological space is assimilable to the Euclidean space. Edges in a proximity graph capture the notion of distance in this neighbourhood. 
+
+\subsection{Empty Region Graphs}
+
+\begin{defn}
+The circle passing through all three vertices of a triangle is called the \termidx{circumcircle of a triangle}.
+\end{defn}
+
+\begin{defn}
+The \termidx{Delaunay Triangulation} (DT) of a set $V$ is the dual of the \termidx{Voronoi diagram} decomposing $\mathbb{R}^d$ into $|V|$ \textit{cells}. The Delaunay Triangulation is obtained by setting an edge between any two adjacent cells in the Voronoi diagram. The DT is such that no point can be found in the circumcircle of any triangle. 
+\end{defn}
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.5]{fig/Delaunay-circle.eps}
+\caption{The Delaunay triangulation of a set of points in the plane. The red points indicate the circumcenters. It can be seen that no vertex can be found within the circumcircle of some triangle.}
+\label{fig:delaunay}
 \end{figure}
-\section{Graph Clustering}
+
+From a practical point of view, the Delaunay triangulation offers the advantage of
+producing connected graphs. However, it only comes at the cost of having a much larger
+edge set. In $\mathbb{R}^d, d \geq 3$, the number of triangles in the Delaunay graph is
+known to be $\Omega(n^{\lceil\frac{d}{2} \rceil})$. Furthermore, the worst case
+complexity for computing it in $d \geq 3$ is $\mathcal{O}(n^{\lceil\frac{d}{2} +1 \rceil})$
+using the gift-wrapping algorithm \cite{Fortune1997}.
+
+\begin{defn}
+Let $B(x, r)$ denote the sphere or radius $r$ centered at $x$ and $\delta(p,q)$ the distance between two points $p$ and $q$. Let the neighborhood of two points be defined by $\Pi_{p,q} = B(\frac{p+q}{2}, \frac{\delta(p, q)}{2})$. The \termidx{Grabriel graph} (GG) of a set of vertices $V$ is such that for all edges $(p, q) \in E$  the space within $\Pi_{p,q}$ is empty. That is, $\Pi_{p,q} \cap V = \varnothing$
+\begin{figure}[ht]
+\centering
+\input{fig/gabriel}
+\caption{The shaded area represents the empty region of the Gabriel graph}
+\end{figure}
+\end{defn}
+
+The Gabriel graph was introduced in \cite{Gabriel1969} for the analysis of geographic data. The number maximum number of edges is $\Omega(n^2)$ \cite{Toussain1992}. The expected number of edges of the GG was studied in \cite{Devroye1988} and shown to be of the order of $2^{d-1}n$ for most probability densities. In $d$ dimensional Euclidean space, the trivial brute-force algorithm in $\mathcal{O}(dn^3)$ seems to be the only one known to date \cite{Toussaint2012}.
+
+\begin{defn}
+The intersection of the two balls centered at $p$ and $q$ and of radius $\delta(p,q)$ respectively is called a \textit{lune}; $\Lambda_{p,q} = B(p, \delta(p,q)) \cap B(q, \delta(p,q))$. The \termidx{Relative Neighborhood Graph} (RNG) is the graph for which the set of edges $E$ is such that $(p,q) \in E 	\text{ if and only if } \Lambda_{p,q} \cap V = \varnothing$.
+\begin{figure}[ht]
+\centering
+\input{fig/rng}
+\caption{The shaded region is the intersection of the two circles forming a \textit{lune} $\Lambda_{p,q}$}
+\end{figure}
+
+\end{defn}
+
+The Relative Neighborhood graph was introduced in \cite{Toussaint1980} and exploited for its significant perceptual properties. It was also show that in the Euclidean plane, the minimum spanning tree (MST) is a subgraph of the RNG which in turns is contained in the DT. In $\mathbb{R}^d, d > 3$, the maximum number of edges in the RNG is $\Omega(n^2)$ \cite{Toussaint1992} and the brute-force algorithm for computing it is $\mathcal{O}(n^3)$ \cite{Toussaint1980}.
+
+\begin{defn}
+The Euclidean Minimum Spanning Tree (EMST) is the minimum tree that connects every vertices with minimum sum of the weights. The EMST is a subgraph of the Delaunay triangulation.
+\end{defn}
+
+The fastest algorithm for computing the EMST was recently obtained by \cite{March2010} and appears to be approximately $\mathcal{O}(n \log n)$ even in $\mathbb{R}^d$.
+ 
+ \begin{figure}
+  \centering
+    \subbottom[Delaunay triangulation]{%
+    \includegraphics[width=0.45\linewidth]{fig/Delaunay-graph.eps}}
+    \subbottom[Gabriel Graph]{%
+    \includegraphics[width=0.45\linewidth]{fig/Gabriel-graph.eps}}
+    \subbottom[RNG]{%
+    \includegraphics[width=0.45\linewidth]{fig/RNG-graph.eps}}
+    \subbottom[EMST]{%
+    \includegraphics[width=0.45\linewidth]{fig/EMST-graph.eps}}    
+    \caption{Empty region graphs, ordered according to $EMST(V) \subseteq RNG(V) \subseteq GG(V) \subseteq DT(V)$. A set of 250 points were drawn uniformly at random in $\mathbb{R}^2$}
+\end{figure}
+
+\subsection{Nearest Neighbor Graphs}
+
+While the empty region graphs presented in the last section could be geometrically appealing, their density (exponential for the GG) is problematic. Furthermore, the computational cost for obtaining them is prohibitively expensive for the general large scale problems envisioned in this work. The class of nearest neighbor graphs tend to be a good replacement against these issues and has been prominently used in spectral clustering \cite{Luxburg2007}.
+
+\begin{defn}
+The \termidx{Nearest Neighbor Graph} (NNG) is a directed graph connecting vertex $p$ to $q$ if $q$ is the nearest neighbor of $p$.
+\end{defn}
+
+The nearest neighbor relation is not symmetric and thus forgo a definition of NNG as an undirected graph. When admitting $k$ nearest neighbors, the concept can be generalized to the K-NNG \cite{Miller1997} and the NNG appears to be only a special case where $k=1$.
+
+\begin{defn}
+The \termidx{Symmetric K-Nearest Neighbor Graph} (K-NNG) is graph for which an edge connects vertex $p$ to $q$ only if $q$ is among the $k$ nearest neighbors of $p$. Let $N_k(p)$ denote the set of $k$ points closest to $p$, the edge set is defined as
+\begin{equation}
+E = \{ (p, q) : p \in N_k(q) \textbf{ or } q \in N_k(p) \}
+\end{equation}
+\end{defn}
+
+\begin{defn}
+The \termidx{Mutual K-Nearest Neighbor Graph} (K-NNG) is graph for which an edge connects vertex $p$ and $q$ only if $q$ is among the $k$ nearest neighbors of $p$ and similarly for $q$ in the other direction. That is, 
+\begin{equation}
+E = \{ (p, q) : p \in N_k(q) \textbf{ and } q \in N_k(p) \}
+\end{equation}
+\end{defn}
+
+\begin{defn}
+The \termidx{$\epsilon$-Graph} is the graph connecting vertex $p$ and $q$ only if $q$ is within a ball of radius $\epsilon$ centered at $p$. That is, 
+\begin{equation}
+E = \{ (p, q) : \delta(p, q) < \epsilon \}
+\end{equation}
+\end{defn}
+
+ \begin{figure}[ht]
+  \centering   
+    \subbottom[Symmetric Graph]{%
+    \includegraphics[width=0.45\linewidth]{fig/Symmetric-graph.eps}}
+    \subbottom[Mutual]{%
+    \includegraphics[width=0.45\linewidth]{fig/Mutual-graph.eps}}
+    \subbottom[Epsilon]{%
+    \includegraphics[width=0.45\linewidth]{fig/Epsilon-graph.eps}}   
+  \caption{K-NN Graphs. The number of nearest neighbors was set to $k=5$ for the first two examples while $\epsilon$ was set to $0.01$ for the last.}
+  \label{fig:knn-graphs}
+\end{figure}
+
+The choice of an appropriate radius for the $\epsilon$-graph tends to be difficult to estimate in practice. Furthermore, if the sampled data exhibit variations of density, a fixed value for $\epsilon$ will do poorly, potentially resulting in a disconnected graph. The mutual graph is usually sparser and can better function over constant densities. It however also lead to disconnected graphs more easily as shown in figure \ref{fig:knn-graphs}. Finally, the symmetric graph better handles data at different scales but produces more edges.  
+
+K-NN graphs can be implemented effectively using a KD-Tree \cite{Friedman1977} structure in low dimensions but quickly suffers from the curse of dimensionality.
+When admitting of the approximate neighbors, very efficient algorithms have recently been proposed to solve this problem based on the concept of \textit{locality-sensitive hashing} \cite{Andoni2008}. As opposed to the KD-Tree approach, they perform efficiently in high dimensional spaces. 
+
+%\section{Graph Clustering}
 % Walktrap algorithm
-\section{Initiation and Termination}
+%\section{Initiation and Termination}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Experiments
@@ -1762,6 +1864,6 @@ also reflect optimal structures of the solution space. \cite{Mahadevan2007} also
 \bibliography{library}
 \bibliographystyle{plain}
 
-\printindex
+%\printindex
 
 \end{document}
