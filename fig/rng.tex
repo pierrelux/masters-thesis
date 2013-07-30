@@ -1,21 +1,21 @@
 \documentclass{standalone}
 \usepackage{tikz}
 \begin{document}
-\begin{tikzpicture}[thick, scale=0.45]
+\begin{tikzpicture}[thick, scale=1.0]
 \begin{scope}
-\clip (-2,0) circle (4cm);
-\clip (2,0) circle (4cm);
-\fill[color=gray!50] (-4,4) rectangle (4,-4);
+\clip (-0.5,0) circle (1cm);
+\clip (0.5,0) circle (1cm);
+\fill[color=gray!50] (-1,1) rectangle (1,-1);
 \end{scope}
 
-\draw (-2,0) circle (4cm);
-\draw (2,0) circle (4cm);
+\draw (-0.5,0) circle (1cm);
+\draw (0.5,0) circle (1cm);
     
-\path (-2, 0) coordinate [label= left:$p$] (p);
-\path (2,0) coordinate  [label= right:$q$] (q);
+\path (-0.5, 0) coordinate [label= left:$p$] (p);
+\path (0.5,0) coordinate  [label= right:$q$] (q);
 \draw (p) -- (q);
     
-\fill [black] (p) circle (4pt);
-\fill [black] (q) circle (4pt);
+\fill [black] (p) circle (2pt);
+\fill [black] (q) circle (2pt);
 \end{tikzpicture}
 \end{document}

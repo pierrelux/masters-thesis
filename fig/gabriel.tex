@@ -1,14 +1,14 @@
 \documentclass{standalone}
 \usepackage{tikz}
 \begin{document}
-\begin{tikzpicture}[thick, scale=0.75]
-\draw (0,0) circle (2cm);
-\fill [gray!50] (0,0) circle (2cm);
+\begin{tikzpicture}[thick, scale=1.0]
+\fill [gray!50] (0,0) circle (1cm);
+\draw [black] (0,0) circle (1cm);
 
-\path (-2, 0) coordinate [label= left:$p$] (p);
-\path (2,0) coordinate  [label= right:$q$] (q);
+\path (-1, 0) coordinate [label= left:$p$] (p);
+\path (1,0) coordinate  [label= right:$q$] (q);
 \draw (p) -- (q);
-\fill [black] (p) circle (3pt);
-\fill [black] (q) circle (3pt);
+\fill [black] (p) circle (2pt);
+\fill [black] (q) circle (2pt);
 \end{tikzpicture}
 \end{document}
