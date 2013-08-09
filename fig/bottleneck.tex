@@ -1,0 +1,50 @@
+\documentclass[tikz]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{shapes}
+\begin{document}
+\tikzstyle{space} = [ellipse, thick, minimum height=3cm,minimum width=2.5cm,draw, shading=radial, inner color=white, outer color=gray!15]
+\tikzstyle{vertex} = [circle,fill=blue!45,minimum size=5pt]
+\tikzstyle{edge} = [draw,black, thick, -]
+\tikzstyle{bottleneck edge} = [draw,line width=5pt,-,red!45]
+\pgfdeclarelayer{graph_layer}
+\pgfsetlayers{main,graph_layer}
+
+\begin{tikzpicture}
+
+\begin{pgfonlayer}{graph_layer} 
+\draw (0,0) node[style=space] (PartitionA) {};
+\draw (5,0) node[style=space] (PartitionB) {};
+
+\node[vertex] (A) at (1, 0) {};
+\node[vertex] (A2) at (0, 1) {};
+\node[vertex] (A3) at (0, -1) {};
+\node[vertex] (A4) at (0, 0) {};
+
+\path[edge] (A) -- (A2);
+\path[edge] (A) -- (A3);
+\path[edge] (A4) -- (A2);
+\path[edge] (A4) -- (A3);
+
+\node[vertex] (B) at (4, 0) {};
+\node[vertex] (B1) at (5, 0) {};
+\node[vertex] (B2) at (5, 1) {};
+\node[vertex] (B3) at (5, -1) {};
+\node[vertex] (B4) at (6, 0) {};
+
+\path[edge] (B) -- (B1);
+\path[edge] (B) -- (B2);
+\path[edge] (B) -- (B3);
+\path[edge] (B3) -- (B1);
+\path[edge] (B3) -- (B4);
+\path[edge] (B4) -- (B2);
+\path[edge] (B4) -- (B1);
+\path[edge] (B1) -- (B2);
+
+\path[edge] (A) -- (B);
+
+\end{pgfonlayer}
+\path[bottleneck edge] (A) -- (B);
+
+
+\end{tikzpicture}
+\end{document}

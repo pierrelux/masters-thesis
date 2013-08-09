@@ -18,12 +18,11 @@
 \chapterstyle{ell}
 \setsecheadstyle{\scshape\LARGE\raggedright}
 
-% PDF
 \usepackage[colorlinks,bookmarksnumbered,bookmarksdepth=subsubsection,unicode=true]{hyperref}
 \newsubfloat{figure}  % must follow hyperref
 \hypersetup{
 pdfauthor = {Pierre-Luc Bacon},
-pdftitle = {Automatic Options Discovery from the Community Structures in the State-Transition Graph},
+pdftitle = {On the Bottleneck Concept for Options Discovery: Theoretical Underpinnings and Extension in Continuous State Spaces},
 pdfsubject = {Subject},
 pdfkeywords = {reinforcement learning, markov chains, hierarchical reinforcement learning},
 pdfcreator = {LaTeX with the hyperref package},
@@ -42,6 +41,9 @@ citecolor = [HTML]{0000FF},
 \usetikzlibrary{shapes,arrows}
 \usepackage{standalone}
 \usepackage[boxed]{algorithm2e}
+
+\newcommand*{\pretoctitle}[1]{{\clearpage\centering \vspace*{-\topfiddle}#1\par}}
+\newcommand{\asuacknowledgements}{\pretoctitle{ACKNOWLEDGEMENTS}}
 
 % Custom commands
 \newcommand{\rvs}{r.v.'s\xspace}
@@ -73,8 +75,10 @@ citecolor = [HTML]{0000FF},
 \newtheorem{conj}{Conjecture}[section]
 \newtheorem{exmp}{Example}[section]
 
+\usepackage[utf8]{inputenc} % Force UTF-8 input encoding
 \usepackage{showidx}
 \makeindex
+
 \begin{document}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -89,8 +93,7 @@ citecolor = [HTML]{0000FF},
 \predate{\begin{center}\large}
 \postdate{\end{center}}
 
-%\title{Automatic Options Discovery from the Community Structures in the State-Transition Graph}
-\title{Towards Better Theoretical Underpinnings for the Bottleneck Concept}
+\title{On the Bottleneck Concept for Options Discovery: \\ \large{Theoretical Underpinnings and Extension in Continuous State Spaces} }
 \author{Pierre-Luc Bacon}
 \date{\today}
 \renewcommand\maketitlehookb{
@@ -120,14 +123,59 @@ the degree of Master of Science.
 \end{titlingpage}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Ackowledgements
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\clearpage
+%\pagenumbering{roman}
+%\renewcommand{\abstractname}{Dedication}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Ackowledgements
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\pagenumbering{roman}
+\renewcommand{\abstractname}{Acknowledgements}
+\begin{abstract}
+I would like to thank everyone with whom I had the chance to share sudden bursts of 
+enthusiasm upon exploring new ideas; those who gave me the freedom to fail, thinker,
+and be slightly obsessed on certain days.
+
+I am deeply grateful to my supervisor Doina Precup, Amir-massoud Farahmand, and Gheorghe Comanici for their precious insights and encouragement. Special thanks to lab members Clement Gehring and Neil Girdhar for their persistence in constructively challenging my ideas.
+\end{abstract}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Abstract
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\renewcommand{\abstractname}{Abstract}
+\begin{abstract}
+The bottleneck concept in reinforcement learning has played a prominent role in automatically finding temporal abstractions from experience. Lacking significant theory, it  has been regarded by some as being merely a \textit{trick}. This thesis attempts to provide elements from spectral graph theory to support it while gaining better intuition about the shortcomings of its various instantiations. A connection to the theory of Nearly Decomposable Markov Chains is also drawn and shows great promise. An options discovery algorithm explainable in terms of spectral graph clustering is proposed and is the first of its kind to be applicable in continuous state spaces. As opposed to other similar approaches, this one has running time $\mathcal{O}(mn^2)$ rather than $\mathcal{O}(n^3)$ making it suitable to much larger domains than the typical \textit{grid worlds}.
+\end{abstract}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Abrégé
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\renewcommand{\abstractname}{Abrégé}
+\begin{abstract}
+L'identification automatique de goulots d'étranglement dans la structure de solution a joué un rôle important en apprentissage par renforcement hiérarchique au cours des dernières années. Bien que populaire, cette approche manque toutefois toujours de fondements théoriques adaptés. Ce mémoire tente de pallier à ces lacunes en établissant des liens en théorie spectrale des graphes, espérant ainsi obtenir une meilleure compréhension des conditions garantissant son bon fondement. Une revue des efforts réalisés concernant les chaines de Markov presque complètement décomposable (NCD) permet de croire en leur utilité pour le problème ici considéré. Un algorithme de découverte d'options motivé par la théorie spectrale des graphes est proposé et semble être le premier du genre à pouvoir aussi être appliqué dans un espace d'états continu. Contrairement à d'autres approches similaires, la complexité algorithmique en temps est de l'ordre de $\mathcal{O}(mn^2)$ plutôt que $\mathcal{O}(n^3)$, rendant possible le solutionnent de problèmes de plus grande envergure.
+\end{abstract}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Table of content
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
 \setcounter{tocdepth}{2}
 \tableofcontents
+%\newpage
+%\listoffigures
+%\listofalgorithms
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Introduction
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\pagenumbering{arabic}
 \chapter{Introduction}
 
 The idea of \textit{bottleneck}
@@ -1496,6 +1544,7 @@ Laplacian would be considered as replacement for practical purposes. Such substi
 is also adopted in \cite{Mahadevan2009} for the same reasons.
 
 \section{Graph Partitioning}
+\label{sec:graph-partitioning}
 Through the study of the set of eigenvalues associated with the Laplacian, some remarkable results on 	the subgraph structures can be obtained. The set of problems concerning the optimality of graph cuts with regard to the size of their components is commonly referred to as \termidx{isoperimetric problems}. Edge cuts are of particular interest as it will be shown below that they relate to spectrum of $\laplacian$ through the so-called Cheeger constant. 
 
 % Define boundary
@@ -2102,7 +2151,18 @@ While offering the powerful off-policy property, \textsc{Intra-Option} is known 
 % Conclusion
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Conclusion}
-\cite{Hauskrecht2013}
+
+The bottleneck approach to options discovery can appear rebuttal because of its lack of proper theoretical foundations. This thesis attempted to motivate the soundness of the family of bottleneck heuristics by establishing a connection to spectral graph theory and relating it to vast body of work on Nearly Decomposable Markov Chains (NDMC) spanning across more than three decades. Furthermore, an algorithm based on these principles was proposed for discovering options in continuous state spaces. While many bottleneck-like approaches have succeeded in applying them to discrete domains, none had yet shown how to extend these ideas in a continuous domain such as Pinball. The empirical evaluation of the proposed algorithm showed its feasibility but also highlighted difficulties in practice to use it as a \textit{black-box} approach.
+
+A frequent critique brought against this class of algorithms has often to do with the fact that the reward structured is apparently ignored. After having studied the properties of the graph Laplacian in section \ref{chap:dynamics}, this claim however seems to dismissible. Indeed, the algorithm proposed here constructs a graph representation which does not seek approximate transition probabilities as edge weights. The resulting clustering can then be understood in terms of the dynamics of a random walk process over it; a different stochastic process than the one induced by the optimal policy. More precisely, bottlenecks captured in this way are related to those of the random walk Laplacian rather than the original Laplacian of the MDP. If such a substitution preserves no information on the reward structure, how can it then succeed in practice ?
+
+A plausible reason might have to do with the kind of reinforcement learning domains commonly used in the field of HRL. In the four-rooms domains for example, doors appear as natural bottleneck states which happen to be in accordance with the optimal value function. The four-rooms domain is so ubiquitous that bottlenecks are often explained in terms of doors. Such references have the unfortunate effect of misguiding practitioners into conceiving bottlenecks as merely \textit{state features}, or \textit{saliencies}, rather than some effective \textit{coarsening} of the dynamics induced by an MDP.
+
+The empirical results presented in this work departs from those obtained by previous authors in the fact that a bottleneck-like option construction algorithm was applied over the four-dimensional continuous state space of the Pinball domain. While subject to the same oversimplification concerning the reward structure, a useful decomposition was still obtained. By exploring the bottleneck concept under a new domain, practical obstacles were uncovered. 
+It seems at this point that a useful research methodology for this problem should include not only results in a variety of reinforcement learning domains but also consider the generation of random MDPs with varying degrees of decomposability. The approach of \cite{Archibald1995} for the generating MDPs seems to be an appropriate fit as the mixing rate can be controlled as well as other structural properties of transition matrix. 
+
+The recurrence of the bottleneck concept in the literature of the last decade should suffice to motivate the establishment of a proper theoretical research agenda.  The theory of Nearly Decomposable Markov Chains, and more generally the theory of MDP from operational research, seems to have been overlooked in reinforcement learning. The problem of options discovery should be first tackled using the theory of MDPs and extended to more of model-free and online setting compatible with the reinforcement learning framework. A promising research avenue might lie in some information theoretic approach similar to \cite{Deng2011} but subject to a rate distortion perspective of the value function as in \cite{Still2012}. Such results would not only benefit our understanding of temporal abstraction in RL but also provide insights to the line of work initiated by \cite{Bovinick2012} on the cognitive process involved in human subgoal discovery.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Bibliography
