@@ -1,0 +1,823 @@
+\section{Markov Chains}
+
+A discrete-time stochastic process is a family of random variables $\{ X(t), t \in T\}$
+(\rvs) indexed by a time parameter $t \in \mathbb{N} = \{0, 1, 2,...\}$. The
+value of $X_n$ is referred to as the \termidx{state} of the process. When the family of
+random variables is defined over a discrete sample space
+$\Omega$, the stochastic process is said to be \textit{discrete-valued}.
+Stochastic processes are useful for modelling probabilistic phenomenon involving in
+time such as the evolution of the price of a stock, or the
+number of connections to a web service over the day for example. Due to the inherent
+complexity many systems, it is often desirable to make simplifying assumptions to
+make the exercise tractable. One might then decide to treat the \rvs as
+\textit{independent and identically distributed} (iid) but only at the cost of loosing the ability to
+capture the correlation structure among the \rvs. The so-called \textit{Markov}
+assumption is often used when the iid property is deemed too restrictive, but is yet
+simple enough to make computation tractable.
+
+\begin{defn}
+A \termidx{Markov Chain} is a discrete-time and discrete-valued stochastic process
+which possesses the Markov property. The Markov property implies that for all times $n \geq
+0$ and all states $i_0, \dots, i, j \in \Omega$:
+\begin{equation}
+P(X_{n+1} = j | X_0 = i_0, X_1 = i_1, ..., X_n = i) = P( X_{n+1} = j | X_n = i)
+\end{equation}
+\end{defn}
+
+The Markov property (or \termidx{memoryless property}) could be stated simply by
+saying that the \textit{future is independent of the past, given the present state}.
+Therefore, knowing the current value of $X_n = i$ is enough to characterize the
+future evolution of the stochastic process $\{X_{n+1}, X_{n+2}, \dots \}$ and the history
+$\{X_0, X_1,\dots, X_{n-1} \}$ can be discarded.
+
+A Markov chain is completely specified by the one-step transition probabilities
+$p_{ij} = P(X_{n+1} = i | X_n = j)$ contained in its Markov or
+\termidx{stochastic matrix}. For a finite state-space $\mathcal{X}$, we have:
+\begin{equation}
+\mathbf{P} = \begin{bmatrix}
+p_{11} & p_{12} & \cdots & p_{1m} \\
+p_{21} & p_{22} & \cdots & p_{2m} \\
+\vdots & \vdots & \ddots & \vdots \\
+p_{m1} & p_{m2} & \cdots & p_{mm}
+\end{bmatrix}
+\end{equation}
+
+Furthermore, $\mathbf{P} $ must satisfy the following properties:
+\begin{equation}
+p_{ij} \geq 0 \mbox{ and } \sum_{j=1}^M p_{ij} =1 
+\end{equation}
+
+Let $\mathbf{P}^\optimal$ denote the adjoint of $\mathbf{P}$. If $\mathbf{P}^\optimal = \mathbf{P}$ holds, then the stochastic matrix is said to be \termidx{time-reversible}. 
+
+Those elements of $\mathbf{P}$ for which $p_{ii} = 1$ are said to be
+\termidx{absorbing} and once entered, the Markov chain the never escapes.
+
+If the elements of $\mathbf{P} $ are independent of the time index, the
+Markov chain is said to be \termidx{time-homogeneous} and has \termidx{stationary transition
+probabilities}. If this property is satisfied and one knows the transition probabilities of
+a Markov Chain, the problem of computing probability distributions is greatly
+simplified and can be succinctly expressed using matrix multiplication.  
+
+The \termidx{Chapman-Kolmogorov} equation lets us express the probability of
+going from state $i$ to $j$ in $n$ steps by $[\mathbf{P}^n]_{ij} = [
+\underbrace{\mathbf{P} \times \mathbf{P} \times \dots \times \mathbf{P}}_{\text{n
+times}} ]_{ij}$. The probability of transitioning from state $i$ to any other state under
+$n$ steps then becomes:
+\begin{equation}
+P( \cdot, n | i) = e_i \mathbf{P}^n
+\end{equation}
+Here $e_i$ stands for the vector with zero components everywhere except of for its
+$i$th component set to 1. 
+
+Using the Chapman-Kolmogorov equation, a state $j$ is classified as being
+\termidx{accessible} from $i$ if $[\mathbf{P}^n]_{i,j} > 0$ for some $n \geq 0$. When
+the relation holds in both direction, $i$ and $j$ are said to \termidx{communicate}. If
+every possible pair of states can communicate, the Markov chain is classified as being
+\termidx{irreducible}. Given that a state $j$ has been initially encountered once, we
+say that it is \termidx{recurrent} if the probability of visiting it again is nonzero. That
+is, denote $T_j$ the time at which the chain returns to $j$, the recurrence property
+expresses the fact that $P(T_j < \infty | X_0 = j) > 0$. When $E(T_j | X_0) < \infty$,
+state $j$ is said to be \termidx{positive recurrent}.
+
+These last definitions are essential for defining the \termidx{ergodicity}
+property which is a condition often assumed in the analysis of Markov Decision Processes which will be covered below. 
+
+\begin{defn}
+A Markov chain is ergodic if it is irreducible and positive recurrent.
+\end{defn}
+
+It occurs often that one is interested in knowing how a given probability distribution
+for $X_n$ would evolve in time.  Denote the
+distribution of $X_n$ by the row vector $\mu_n$ and the \termidx{initial distribution}
+by $\mu_0$. It can seen that the following relation hold
+\begin{equation}
+ \mathbf{\mu}_n= \mathbf{\mu}_0 \mathbf{P}^n \label{eq:initial-dist}
+\end{equation}
+by noting that the Markov property implies that
+\begin{align}
+P(X_0 &= i_0, X_1 = i_1, X_2 = i_2, \dots, X_n = i_n) = \notag \\
+&P(X_0 = i_0) P(X_1 = i_1 | X_0 = i_0) P(X_2 = i_2 | X_1 = i_1) \dots P(X_n = i_n |
+X_{n-1} = i_{n-1})
+\end{align}
+and that our Markov chain is time-homogeneous ($\mathbf{P}$ is fixed).
+
+If it happens that the distribution of $\mu_n$ does not change with $n$, then 
+ the Markov chain is said to be \termidx{stationary}. 
+
+\begin{defn}
+A Markov chain said to be stationary if it satisfies $P(X_0 = i_0, X_1 = i_1, \dots, X_n
+= i_n) = P(X_m = i_0, X_{m+1}, \dots, X_{m+n})$ for any $m \in \mathbb{Z_+}$.
+\end{defn}
+
+Using \ref{eq:initial-dist}, the stationarity problem for a Markov Chain amounts to
+finding a vector $\pi$ such that
+\begin{equation}
+\mathbf{\pi}^\transpose P = \mathbf{\pi}^\transpose
+\end{equation}
+
+The stationary distribution $\mathbf{\pi}^\intercal$ can thus be seen as the left
+eigenvector of $\mathbf{P}$ associated with the eigenvalue 1. Furthermore, it must be
+that $\sum_k \mathbf{\pi}_k = 1$ in order for $\pi$ to be a well-defined probability
+distribution. When the Markov chain reaches the stationary distribution, it is said to be
+in its \termidx{steady-state} mode.
+
+An important characterization of the properties of stochastic matrices comes from the
+theory of nonnegative matrices in the form of the Perron-Frobenius theorem. First, the spectral radius of a square matrix is defined as 
+
+\begin{equation}
+\rho(A) \overset{\underset{\mathrm{def}}{}}{=} \max_i(|\lambda_i|)
+\end{equation}
+
+The theorem in its original form about irreducible matrices \cite{Horn1986} then amounts to the following.
+
+\begin{thm}[Perron-Frobenius Theorem]
+
+Let $A$ be an irreducible and nonnegative matrix, then the following claims hold
+\begin{enumerate}
+\item The spectral radius $\rho(\mathbf{A})  > 0$
+\item $\rho(\mathbf{A})$ is an eigenvalue of $\mathbf{A}$
+\item There exists a positive vector $\mathbf{x}$ such that $\mathbf{A}\mathbf{x} = \rho(\mathbf{A})\mathbf{x}$ and $\rho(\mathbf{A})$ is a simple eigenvalue of $\mathbf{A}$.
+\item The unique eigenvector whose components sum to 1 is called \termidx{Perron
+ vector}, that is
+\begin{equation}
+\mathbf{A} \mathbf{p} = \rho(\mathbf{A}) \mathbf{p}, \hspace{2.5mm} \mathbf{p} > 0 \hspace{2.5mm} \mbox{and} \hspace{2.5mm} \|\mathbf{p}\|_1 = 1
+\end{equation}
+\end{enumerate}
+\end{thm}
+
+The theorem can also be conveniently adapted to Markov chains under the following
+lemma proven in \cite{Montenegro2006}.
+\begin{lem}
+Let $\mathbf{P}$ be the stochastic matrix associated with a irreducible and reversible 
+Markov chain over a state space $\mathcal{X}$ of size $n$. $\mathbf{P}$ must then
+have a complete spectrum of real eigenvalues of magnitude at most 1 and of the form
+\begin{equation}
+1 = \lambda_0 \geq \lambda_1 \lambda \geq \dots \geq \lambda_{n-1} \geq -1
+\end{equation}
+\end{lem}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Markov Decision Processes
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Markov Decision Processes}
+\label{sec:mdp}
+Markov chains of the kind presented in the last section do not consider the influence of an external \textit{input} on its dynamics. The case of controlled Markov chains under the framework of \mdps is studied in this section. The theory of \mdps will lay the theoretical foundations for the problem of optimal sequential decision making for situated agents considered in Reinforcement Learning. The following presentation adopts most of the notion from \cite{Csaba2010}. 
+
+\begin{defn}
+\label{defn:mdp}
+A finite-action discounted \termidx{Markov Decision Process} (MDP) is a tuple
+$\mathcal{M} = \langle \mathcal{X}, \mathcal{A}, r, \mathcal{P},\gamma \rangle$ where
+$\mathcal{X}$ is a non-empty countable set of states, $\mathcal{A}$ is a finite state
+of actions, $\mathcal{P}$ is a transition probability kernel giving rise to a distribution
+$P(\cdot |x, a)$ over $\mathcal{X}$ given any $x \in \mathcal{X}$ and $a \in
+\mathcal{A}$,  $r$ is the reward function $r: \mathcal{X} \times \mathcal{A} \mapsto
+\mathbb{N}$ and $\gamma \in [0, 1]$ is a discount factor.
+\end{defn}
+
+A \termidx{deterministic policy} $\pi$ is a mapping $\pi : \mathcal{X} \mapsto
+\mathcal{A}$. In the theory of MDPs, stochastic policies of the form $\pi : \mathcal{X}
+\mapsto \Omega(\mathcal{A})$ are also object of study, in which case actions are
+drawn from a conditional probability distribution  over states according to $A_t \sim
+\pi(\cdot | X_t)$ (here $A_t$ and $X_t$ denote \rvs at time $t$). 
+
+Fixing a policy for an MDP has for effect to induce a \termidx{Markov Reward Process}
+(MRP) $\langle \mathcal{X}, \mathcal{R}^\pi, \mathcal{P}^\pi, \gamma \rangle$ with
+the reward function $\mathcal{R}^\pi(x) = r(x, \pi(x))$ and state transition probability
+kernel $P(\cdot | x) = P(\cdot | x, \pi(x))$. An MRP can be thought as a Markov chain
+augmented with rewards over the set of states. The concepts of induced Markov
+chains and Markov Reward Processes are particularly important in the analysis of the
+dynamics of an MDP. At the level of the induced Markov chain of an MDP, the
+existence of a stationary distribution is not necessarily guaranteed.
+
+\subsection{Value Function}
+The notion of a value function is instrumental in supporting the principle of optimality
+that underlies the decision theoretic framework of MDPs. It is assumed in this context
+that a decision maker, or \textit{agent}, is acting in such a way as to optimize some
+intrinsic notion of what \textit{good} behaviour is. From to the definition
+\ref{defn:mdp} of an MDP, the reward function $r$ is used to express a quantity
+known as the \termidx{return}
+
+\begin{defn}
+The return of an \mdp is the total discounted sum of the rewards originating from
+the induced \mrp.
+\begin{equation}
+\mathcal{R} = \sum_{t=0}^\infty \gamma^t R_{t+1} \label{eq:return}
+\end{equation}
+\end{defn}
+
+Fixing the value of $\gamma < 1$ leads to a notion of return where the immediate
+reward is worth exponentially more than the far future. In this case, the resulting MDP 
+is then called a \termidx{discounted \mdp}. On the other hand, setting $\gamma =
+1$ makes the immediate reward observed at each step equally important and one 
+then talks of an \termidx{undiscounted \mdp}
+
+Knowing the \textit{desirability}, or value, of a state at any moment will greatly
+simplify the problem of deriving an optimal behavior. 
+
+\begin{defn}
+The \termidx{value function} $V^\pi: \mathcal{X} \mapsto \mathbb{R}$ of a
+stationary policy $\pi$ is the conditional expectation of the return (discounted or
+undiscounted) given a state.
+\begin{equation} 
+V^\pi(x) = \expectation \left[ \sum_{t=0}^\infty \gamma^t R_{t+1}  \given  X_0 =
+x\right] , x \in \mathcal{X} \label{eq:value-function}
+\end{equation}
+\end{defn}
+
+An optimal behavior is achieved if the value function of its policy is optimal. An
+optimal value function $V^*: \mathcal{X} \mapsto \mathbb{R}$ is one which obtains
+the maximum possible expected return for every state.
+
+% Action value function 
+The \termidx{action-value function} of a policy $\pi$ is tightly related to the notion of
+value function presented above. Instead of being defined only over states, it specifies
+the expected return of initially being in state $x$ choosing a first action $a$ and
+following $\pi$. 
+\begin{defn}
+The action-value function $Q^\pi: \mathcal{X} \times \mathcal{A} \mapsto
+\mathbb{R}$ of a stationary policy $\pi$ is the conditional expectation of the return
+given an initial state and action pair. 
+\begin{equation}
+Q^\pi(x, a) = \expectation \left[ \sum_{t=0}^\infty \gamma^t R_{t+1} \vert X_0 = x,
+A_0 = a \right], \; x \in \mathcal{X}, a \in \mathcal{A}
+\end{equation}
+\end{defn}
+
+If the action-value function yields the maximum expected return for every state
+action pair, it is said to be optimal and denote it by $Q^*$. One can go from the
+action-value function to the value-function by noting that for finite-action MDP
+(definition \ref{defn:mdp})
+\begin{equation}
+V^*(x) = \max_{a \in \mathcal{A}} Q^*(x, a) \label{eq:qopt-to-vopt}
+\end{equation}
+
+In the more general case of a countable non-empty sets of actions, the $\max$
+operator should be replaced with the supremum ($\sup$) of $\mathcal{A}$. The
+optimal action-value function can also be recovered from the value-function as
+follow:
+\begin{equation}
+Q^*(x,a) = r(x,a) + \gamma \sum_{y \in \mathcal{X}} P(y, a, x) V^*(y), \; x \in
+\mathcal{X}, a \in \mathcal{A} \label{eq:vopt-to-qopt}
+\end{equation}
+
+\subsection{Bellman Equations}
+Similar to equation \ref{eq:vopt-to-qopt}, given an MDP, the  so-called 
+\termidx{Bellman equations} are written as
+
+\begin{equation}
+V^\pi(x) = r(x, \pi(x)) + \gamma \sum_{y \in \mathcal{X}} P(y, \pi(x), x) V^\pi(y)
+\label{eq:bellman-equations}
+\end{equation}
+
+The recursive formulation of the Bellman equations allows to relate the value of state
+to that of its possible successor states, weighted by their probability of occurrence in
+an average.  For a finite d-dimensional state space $\mathcal{X}$, $V^\pi$ and
+$r^\pi$ can be thought as a vectors in $\mathbb{R}^d$ with $\mathcal{P}$ being a
+transition matrix $\mathbf{P}: \mathbb{R}^{d \times d}$. It can be seen that the
+Bellman equations (\ref{eq:bellman-equations}) define a linear system of equations in
+$d$ unknows whose unique solution is $V^\pi$
+
+\begin{equation}
+\mathbf{V}^\pi = \mathbf{r}^\pi + \gamma \mathbf{P}^\pi \mathbf{V}^\pi
+\end{equation}
+
+Solving for the left hand side, 
+
+\begin{equation}
+\mathbf{V}^\pi = (\mathbf{I} - \gamma \mathbf{P}^\pi)^{-1} \mathbf{r}^\pi
+\label{eq:direct-value}
+\end{equation}
+
+Under the framework of reinforcement learning adopted in this work,
+$\mathbf{P}$ and $\mathbf{r}^\pi$ are not available \textit{a priori}, making the
+direct solution of \ref{eq:direct-value} impossible to compute. Furthermore, since
+matrix inversion is generally of the order of $\mathcal{O}(n^3)$, the computational
+cost will quickly become impractical for large state spaces. Iterative methods are thus
+preferred under almost any practical scenario. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Bellman Operator
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Bellman Operator}
+The notion of \termidx{Bellman operator} subtends the theoretical justifications of the
+indirect (as opposed to \ref{eq:direct-value}) methods for computing the value
+function of policies. 
+
+\begin{defn}
+The Bellman operator underlying the policy $\pi$ of an MDP, $T^\pi:
+\mathbb{R}^\mathcal{X} \mapsto \mathbb{R}^\mathcal{X}$, is defined as
+
+\begin{equation}
+(T^\pi V) = r(x, \pi(x)) + \gamma \sum_{y \in \mathcal{X}} P(y, \pi(x), x) V(y), \; x
+\mathcal{X} \label{eq:bellman-operator}
+\end{equation}
+\end{defn}
+
+Similarly, one can define the Bellman operator $T^\pi : \mathbb{R}^{\mathcal{X}
+\times \mathcal{A}} \mapsto \mathbb{R}^{\mathcal{X} \times \mathcal{A}}$  for the
+action-value function induced by a policy $\pi$
+\begin{equation}
+T^\pi Q(x, a) = r(x, a) + \gamma \sum_{y \in \mathcal{X}} P(y, a, x) V(y), \; x \in
+\mathcal{X} \label{eq:bellman-operator-action-value}
+\end{equation}
+
+At first blush, it can be easy to miss the difference between the overall form of the
+Bellman equations (\ref{eq:bellman-equations}) and that of equation \ref{eq:bellman
+operator}. One must in fact observe that, even though $T^\pi$ is defined for a given
+policy, the $V$ term is general and might not need to correspond to $V^\pi$. 
+The Bellman operator happens to be a special type of function called a
+\termidx{contraction mapping}. This characterization allows the \termidx{Banach
+fixed-point theorem} to be used to show convergence properties.  Starting with an
+estimate of the value function of a policy, the iterative application of the Bellman
+operator will converge in the limit to a unique fixed point corresponding to $V^\pi$.
+
+The same principle will underlie the value and policy iteration algorithms for
+computing the optimal value function. Before delving into the details of these
+algorithms, the \termidx{Bellman optimality operator} must be introduced. Just as
+$T^\pi$ (\ref{eq:bellman-operator}), $T^\optimal$ is a maximum-norm contraction
+mapping $T^\optimal: \mathbb{R}^\mathcal{X} \times \mathbb{R}^\mathcal{X}$ but 
+is defined this time as
+\begin{equation}
+(T^\optimal V) = \max_{a \in \mathcal{A}} \left\lbrace r(x, a) + \gamma \sum_{y
+\mathcal{X}} P(y, \pi(x), x) V^\optimal (y) \right\rbrace, \; x \in \mathcal{X} 
+\label{eq:bellman-optimality-operator}
+\end{equation}
+
+The optimal value function $V^\optimal$ satisfies the fixed-point equation
+$T^\optimal V^\optimal = V^\optimal$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Solving MDPs
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Solving MDPs}
+
+The Banach fixed-point theorem introduced above laid out the foundations for the
+two main approaches for solving MDPs: the value and policy iteration algorithms. By
+\textit{solving and MDP}, one generally refers to finding the optimal value function
+underlying an MDP. If the the value function found in that way is indeed optimal, an
+optimal policy can be derived by greedily picking the best action. These two main
+problems -- finding the value of a policy or finding an optimal policy -- are usually
+distinguished under the names of \termidx{prediction} (figure \ref{fig:prediction-problem}) and \termidx{control} (figure \ref{fig:control-problem}). In the control
+problem, one tries to derive an optimal policy by considering the greedy policy with
+respect to the optimal value function (see \cite{Ross1983} for a proof).
+
+\begin{equation}
+\pi^\optimal(x) = \arg \max_{a \in \mathcal{A}} \left[ r(x,a) + \gamma \sum_{y
+\mathcal{X}} P(y, a, x) V^*(y)\right], \; x \in
+\mathcal{X}, a \in \mathcal{A} \label{eq:greedy-optimal-policy}
+\end{equation}
+
+\begin{figure}
+\centering
+\input{fig/spaces}
+\caption{The policy evaluation problem consists in finding the value-function
+corresponding to a given policy $\pi$. The space of 
+stationary policies $\Pi_{stat}$ is only considered in this work.}
+\label{fig:prediction-problem}
+\end{figure}
+
+\begin{figure}
+\centering
+\input{fig/control}
+\caption{The control problem aims at finding an optimal policy i.e. one for which the
+corresponding value function is optimal. There might be multiple optimal policies, but
+the optimal value function must be unique\cite{Ross1983}.}
+\label{fig:control-problem}
+\end{figure}
+
+Finding $V^*$ as a first step would thus allow the control problem to be solved using
+equation \ref{eq:greedy-optimal-policy}. The \termidx{value-iteration} algorithm is
+one way in which $V^\optimal$ can be obtained. Let $V_0$ be some arbitrary initial
+bounded function, this method consists in applying Bellman optimality operator
+$T^\optimal$ successively in the following manner
+\begin{equation}
+V_{k+1} = T^\optimal V_k \label{eq:value-iteration}
+\end{equation}
+
+$V_k$ can be shown to uniformly converge to $V^*$ as $k \to \infty$ \cite{Ross1983}.
+
+With \termidx{policy iteration}, two steps are interleaved: policy evaluation and
+policy improvement. The general idea goes as follow: from an initial policy $\pi_0$
+compute its corresponding value function (policy evaluation) and derive the greedy
+policy $\pi_{k+1}$ from it (policy improvement), then repeat these two steps as
+necessary. Fixing the number of iteration to $k$, the policy computed by policy
+iteration at step $k$ can be shown not to be worse than the greedy policy computed
+by value-iteration. Because of the policy evaluation step, policy-iteration is
+computationally more expensive. It plays however an important role in the Actor
+Critic architectures \cite{Sutton1984}.
+
+The policy and value iterations algorithms belong to the class of algorithms known as
+\termidx{dynamic programming} (DP) methods. Assuming a perfect knowledge of the
+transitions dynamics and reward function, they can greatly reduce the computational
+burden compared to a direct policy search approach which would be of the order of
+$\left\vert \mathcal{X} \right\vert^{\left\vert \mathcal{A} \right\vert}$. For the class of problems considered in this work, these assumptions would no longer be valid and
+additional techniques will have to be used. DP is still of great importance for the
+theoretical underpinning that it provides to the understanding of reinforcement
+learning approaches.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Reinforcement Learning
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Reinforcement Learning}
+
+Reinforcement Learning (RL) considers the problem setting of a situated
+\termidx{agent} trying to learn to optimize a loss (return) from the direct experience
+provided by the \termidx{environment} (figure \ref{fig:rl}). Historically, the field has
+been influenced greatly by the work on trial-and-error learning from the field of
+psychology \cite{Sutton1998}, consequently shaping the type of learning problems it tries to solve. RL hinges heavily upon the theory of \mdps introduced in the previous section while sharing the same goal as DP of solving the control problem. 
+
+\begin{figure}
+  \centering
+  \input{fig/rl}
+  \caption{Reinforcement Learning. An agent executes an action $a_t$ in the
+  environment at time $t$ producing a state transition and instantaneous reward as
+  determined by the environment dynamics.}
+  \label{fig:rl}
+\end{figure}
+
+The assumptions an \termidx{environment model} being known is however usually
+lifted and makes RL mainly focused on \termidx{model-free} learning. The presence
+of a model can still be accommodated in this framework and will subtend a set of RL
+methods for \termidx{planning}: determining the best course of action for
+accomplishing a goal by simulating the consequences of actions in the model.
+Additionally, RL is concerned with the problem of acquiring relevant experience
+from the environment in an \termidx{online} fashion: a problem of joint
+\termidx{exploration} and control. The way in which the acquired experience relates
+to the target policy will differ depending on the learning algorithms which will either
+be classified as \termidx{on-policy} or \termidx{off-policy}. In the following, the
+Monte-Carlo (MC) method will be presented as a way to learn about the value of
+states in the absence of a model. Then the Temporal Difference (TD) learning
+algorithm will be introduced and shown to encompass the MC methods. Finally, the
+off-policy Q-Learning algorithm will be presented. 
+
+\subsection{Monte-Carlo}
+The Monte-Carlo approach to solving the control problem tries to estimate the value
+of a state by online sampling of the return (equation \ref{eq:return}) directly from the
+environment or through simulated experience using a model. Working under the
+assumption of an episodic task, independent samples of return are averaged to
+obtain an estimate of the true expectation. According to the law of large number, as
+the number of samples goes to infinity, the average becomes an unbiased
+estimator. 
+
+The procedure described above is however not sufficient for solving the control
+problem and only answers the prediction one. In the absence of a model, it will be
+necessary to estimate the value of an action-value function. Since certain state-
+action pair might be difficult to sample frequently enough in large state spaces, it
+is often assumed that the agent can be reset in some arbitrary state-action
+configuration (an \termidx{exploring start}). In practice, this assumption turns out to
+be prohibitively restrictive and \termidx{soft-policies} must be introduced to overcome
+this limitation. 
+
+The Monte-Carlo method for control is based on the general framework of policy
+iteration where the current policy is improved greedily with respect to some
+estimate of its value function. Since the only requirement is to update the policy
+toward the greedy policy, it is possible to only consider a slightly perturbed instance
+of the greedy policy. This restriction being dispensed, soft-policies where $\pi(x, a)
+> 0$ can be used instead. A class of soft policies commonly used is the
+\termidx{$\epsilon$-greedy} one, where a random action is chosen with probability
+$\epsilon$, and the greedy action for $1 - \epsilon$. Since non-greedy actions can
+now be explored, the need for exploring starts is eliminated \cite{SuttonBarto1998}.
+
+The approach described so far belongs to the class of on-policy learning algorithms
+where the value of a policy is simultaneously being evaluated and used for control.
+If the policy used to obtain samples, the \termidx{behavior policy}, is different from
+the one being evaluated and improved upon, the \termidx{estimation policy},
+\termidx{importance sampling} must be introduced to compensate for the
+discrepancy in the action selection distributions. The resulting algorithm is said to
+be capable of doing off-policy learning.
+
+\subsection{Temporal Difference Learning}
+The main drawback in using Monte-Carlo methods in an on-line setting has to do with
+the need to wait for the complete execution of an episode in order to update the value
+function estimate. The Temporal Difference (TD) learning algorithm was instrumental in making the RL approach practical. TD learning first showed how to use immediate prediction as target, a technique known as
+\termidx{bootstrapping}, instead of waiting for a full backup to be performed as with
+MC methods. The TD($\lambda$) is a extension of the original algorithm
+\cite{Sutton1984} that unifies DP and Monte-Carlo methods.
+
+Recalling the definition of the value function given in \ref{eq:value-function}, for all $x \in \mathcal{X}$
+\begin{align}
+V^\pi(x) &= \expectation \left[ \sum_{t=0}^\infty \gamma^t R_{t+1}  \given  X_0 =
+x\right] \notag \\
+&= \expectation \left[ R_{t+1} + \gamma \sum_{k=0}^\infty \gamma^k
+R_{t+k+2}\given X_t = x\right]  \notag \\
+&= \expectation \left[ R_{t+1} + \gamma V(X_{t+1}) \given X_t = x\right]
+\label{eq:value-function-recursive}
+\end{align}
+
+The TD(0) algorithm incrementally updates the value function estimate using samples
+of the form $R_{t+1} + \gamma V(X_{t+1})$ exposed in equation 
+\ref{eq:value-function-recursive}
+\begin{equation}
+\hat{V}_{t+1}(x) = \hat{V}_{t}(x) + \alpha_t \left[ R_{t+1} + \gamma \hat{V}_t (X_{t+1})
+- \hat{V}_t(X_t)\right] \label{eq:tdupdate}
+\end{equation}
+
+This way of updating the value function estimate is known as a Stochastic
+Approximation (SA) method and can be shown to converge \cite{Csaba2010} to the
+true $V^\pi$ by treating the sequence $\hat{V}_t$ as a linear ordinary differential
+equation (ODE). Algorithm \ref{alg:td0} shows how the TD update is performed while
+interacting with the environment.
+
+\begin{algorithm}
+\DontPrintSemicolon
+\KwData{An arbitrary initialized vector $V$, a policy $\pi$ to be evaluated}
+\KwResult{The value of $\pi$}
+$x \leftarrow$ initial state\;
+\While{x is not terminal} {
+$a \leftarrow \pi(x)$\;
+$r, x^\prime \leftarrow Step(a)$\;
+$V(x) \leftarrow V(x) + \alpha\left[ r + \gamma V(x^\prime) - V(x) \right]$ \;
+$x \leftarrow x^\prime$
+}
+\caption{Tabular TD(0) algorithm for policy evaluation. The $Step$ function performs
+the state transition in the environment and returns the immediate reward.}
+\label{alg:td0}
+\end{algorithm}
+
+The sequence of step sizes $\alpha$ is subject to the Robbins-Monro (RM) conditions
+according to which
+\begin{equation}
+\sum_{t=0}^\infty \alpha_t = \infty, \hspace{5mm} 
+\sum_{t=0}^\infty \alpha_t^2 < + \infty
+\end{equation}
+
+\subsection{Eligibility Traces}
+
+An important extension to the original TD algorithm is the TD($\lambda$) family
+\cite{Sutton1984}, unifying TD(0) at one end and Monte-Carlo prediction at the other.
+\termidx{Eligibility traces} act as kind of memory which has for effect to weight the
+propagated backups at a given state. Instead of updating the value function based on 
+a single n-steps estimate, TD($\lambda$) computes and an average, known as the
+$\lambda$-return, over a range of multi-step predictions of the return. The multi-step discounted return is first defined as
+\begin{equation}
+\mathcal{R}_{t:k} = \sum_{s=t}^{t+k} \gamma^{s-t}R_{s+1} +
+\gamma^{k+1}\hat{V}_t(X_{t+k+1})
+\end{equation}
+
+The $\lambda$-return is a mixture of multi-step return with weight $(1 -
+\lambda)\lambda^k$ on each term
+\begin{equation}
+\mathcal{R}_t^\lambda = (1 - \lambda)\sum_{k \geq 0} \mathcal{R}_{t:k}
+\label{eq:lambda-return}
+\end{equation}
+
+As $\lambda$ goes to 0, equation \ref{eq:lambda-return}  simplifies to $R_{t+1} +
+\gamma \hat{V}_t (X_{t+1})$ and amounts to a one-step TD backup of the TD(0)
+algorithm. On the other end of the spectrum, as $\lambda$ goes to 1, we get a sample
+of the return from time $t$ until the end of the episode as in the MC method.
+
+TD($\lambda$) is implemented using an additional vector of size $\left\vert
+\mathcal{X} \right\vert$ where each component gets incremented by 1 each time the
+corresponding state is visited. A decay of $\lambda \gamma$ is also applied upon
+each component at each time step. 
+
+\subsection{Sarsa}
+The TD(0) algorithm only solves the policy evaluation problem and the question of
+control must now be answered. Following the general policy iteration paradigm and
+the MC algorithm for control, SARSA is an on-policy control algorithm making use 
+TD(0) for policy evaluation under a soft policy exploration strategy. Similar to equation
+\ref{eq:tdupdate}, the action-value function is updated as follow
+\begin{equation}
+\hat{Q}_{t+1}(x, a) = \hat{Q}_{t}(x, a) + \alpha \left[ R_{t+1} + \gamma \hat{Q}_t
+(X_{t+1}, A_{t+1}) - \hat{Q}_t(X_t, A_t)\right] \mathbb{I}_{X_t = x, A_t = a}
+\label{eq:sarsaupdate}
+\end{equation}
+
+\begin{algorithm}
+\DontPrintSemicolon
+\KwData{An arbitrary initialized matrix $Q$}
+\KwResult{An optimal action-value function for control}
+\ForEach{episode}{
+$x \leftarrow$ initial state\;
+$a \leftarrow Greedy(x)$\;
+\While{x is not terminal} {
+$r, x^\prime \leftarrow Step(a)$\;
+$a^\prime \leftarrow Greedy(x^\prime)$ \;
+$Q(x, a) \leftarrow Q(x, a) + \alpha\left[ r + \gamma Q(x^\prime, a^\prime) - Q(x, a)
+\right]$ \;
+$x \leftarrow x^\prime$ \;
+$a \leftarrow a^\prime$
+}
+}
+\caption{The on-policy Sarsa algorithm based on a TD(0) policy evaluation scheme.
+The $Greedy$ function is the soft greedy policy derived from the current estimate of
+the action-value function. An $\epsilon$ greedy exploration strategy would be
+commonly used.}
+\label{alg:sarsa}
+\end{algorithm}
+
+As the number of samples for each state-action pair goes to infinity, $\lim_{t \to
+\infty} \epsilon = 0$, and under the RM conditions, Sarsa is guaranteed to converge to
+an optimal policy \cite{Sutton1998}. 
+
+\subsection{Q-Learning}
+
+Since TD learning is an on-policy learning method, the choice of exploration strategy
+will directly impact the convergence to the estimation policy. Q-Learning
+\cite{Watkins1989} decouples the exploration and evaluation problems and allows for
+any behavior policy to be followed while still converging to $Q^\optimal$. In this case,
+the update to the action-value function estimate consists in
+\begin{equation}
+Q_{t+1} (x,a) = Q_t(x,a) + \alpha_t \left[ R_{t+1} + \gamma \max_{a^\prime \in
+\mathcal{A}} Q_t(X_{t+1}, a^\prime) - Q_t(X_t, A_t) \right] \mathbb{I}_{X_t = x, A_t = a} 
+\label{eq:qlearning-update}
+\end{equation}
+
+The corresponding procedural form is given in algorithm \ref{alg:qlearning}.
+
+\begin{algorithm}
+\DontPrintSemicolon
+\KwData{An arbitrary initialized matrix $Q$}
+\KwResult{An optimal action-value function for control}
+\ForEach{episode}{
+$x \leftarrow$ initial state\;
+\While{x is not terminal} {
+$a \leftarrow Greedy(x)$\;
+$r, x^\prime \leftarrow Step(a)$\;
+$Q(x, a) \leftarrow Q(x, a) + \alpha \left[ r + \gamma \max_{a^\prime \mathcal{A}}
+Q(x^\prime, a^\prime) - Q(x, a) \right]$ \;
+$x \leftarrow x^\prime$
+}
+}
+\caption{The Q-Learning algorithm under some arbitrary exploration scheme.
+$\epsilon$-greedy could once again be used for that task.}
+\label{alg:qlearning}
+\end{algorithm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% State Abstraction
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{State-Abstraction}
+The algorithm presented so far assumed \textit{tabular} updates rules where value or
+action-value functions are expressed as vectors and matrices respectively. For many
+problems, the set of states might have infinite cardinality or be simply too large to fit in
+memory. Furthermore, as the number of entries increases, the computational expense
+ also increases accordingly. It matters then to seek for a representation of the
+value function capable of generalizing across (possibly unseen) states or state-action
+pairs.
+
+By expressing the value function as a parametrized function, the incremental updates
+would now be performed upon the entries of some parameter vector $\theta$. For
+large state spaces, the number of components in $\theta$ would be much smaller than
+the number of possible states -- rendering the problem more tractable. Value function
+approximation could then be seen as an instance of a supervised learning problem
+with a training set consisting of pairs of state and samples of the return (one-step TD,
+or full Monte-Carlo).
+
+Any existing method from supervised learning could potentially be used for that tasks:
+neural networks, k-nearest neighbors for regression for example. TD-Gammon
+\cite{Tesauro1995} is deemed as one of the great success story in the field and made 
+use of neural networks for value function approximation. In this work, the attention
+will be mainly drawn upon the so-called \textit{linear methods}. A simple, but yet
+expressive, family of function approximators is of the form
+
+\begin{equation}
+V_{\theta}(x) = \theta^\transpose \varphi(x)
+\label{eq:linear-methods}
+\end{equation}
+
+The so-called linear methods seek a representation of the value function as a linear
+combination of \termidx{features}. In equation \ref{eq:linear-methods}, $\theta
+\mathbb{R}^d$ and $\varphi : \mathcal{X} \to \mathbb{R}^d$ with the components
+being defined by a set of \termidx{basis functions} $\varphi_i : \mathcal{X} \to
+\mathbb{R}$. The way in which $\varphi$ is obtained specifies a feature extraction
+method which needs not be linear. 
+
+Value function approximation most commonly relies on \termidx{gradient-descent}
+methods to derive the proper update that must be applied on the parameter vector at
+each step. Because of the simple form of equation \ref{eq:linear-methods}, taking the
+gradient of the value function with respect to $\theta$ yields
+
+\begin{equation}
+\nabla_{\theta} V_\theta(x) = \varphi(x)
+\label{eq:linear-gradient}
+\end{equation}
+
+Using the gradient obtained in equation \ref{eq:linear-gradient}, gradient-descents
+methods update the components of $\theta$ by small increments in the direction of
+the steepest error reduction. A typical error function which is minimized by supervised
+learning techniques is the mean-squared error (MSE). Casting the function
+approximation problem under a setting where the true (yet unknown) underlying value
+function $V^\pi$ is a target, and $V_\theta$ is the best approximation using the
+parametrized form of equation \ref{eq:linear-methods}, the MSE is 
+
+\begin{equation}
+MSE(\theta) = \sum_{ x \in \mathcal{X}} P(x) \left[ V^\pi(x) - V_\theta(x) \right]
+\end{equation}
+
+The $P(x)$ term here accounts for probability of observing a given state $x
+\mathcal{X}$ as an input.
+
+\begin{algorithm}
+\DontPrintSemicolon
+\KwData{An arbitrary initialized vector $\theta$, a policy $\pi$ to be evaluated}
+\KwResult{The value of $\pi$}
+$x \leftarrow$ initial state\;
+\While{x is not terminal} {
+$a \leftarrow \pi(x)$\;
+$r, x^\prime \leftarrow Step(a)$\;
+$\delta \leftarrow r + \gamma \theta^\transpose \varphi[x^\prime] -
+\theta^\transpose \varphi[x]$\;
+$\mathbf{z} \leftarrow \varphi[x] + \gamma \lambda \mathbf{z}$ \;
+$\theta \leftarrow \theta + \alpha \delta z$\;
+$x \leftarrow x^\prime$
+}
+\caption{TD($\lambda$) with linear function approximation}
+\label{alg:linear-tdlambda}
+\end{algorithm}
+
+TD($\lambda$) with linear function approximation (algorithm \ref{alg:linear-tdlambda}) can be shown to converge under the usual RM conditions on the $\alpha$
+parameter \cite{Tsitsiklis1997}.
+
+\subsection{Basis functions}
+
+The choice of proper function space and feature extraction techniques still remains a
+challenging problem which can have a great impact on the quality of the value function
+being approximated. If one has prior knowledge on the shape, or \textit{regularities}
+of the optimal value function under the problem at hand, relevant features could be
+specified explicitly. However, when facing the problem of solving a broad class of
+problems for which little is known about their structure, general set of basis functions
+would be sought. Two feature extraction schemes are presented below for their wide
+applicability and ease of use. 
+
+\subsection{Radial Basis Functions}
+
+Given a state $x \in \mathcal{X}$, each component of the $\varphi$ is set to the
+distance of its corresponding basis function for which $\varphi_i(x_i) = \varphi_i(\|x -
+c_i\|)$ by the radial property and where $c_i$ specifies the \textit{center}. Gaussian
+functions are most commonly used as radial basis functions (RBF) and are defined as
+
+\begin{equation}
+\varphi_i(x) = \exp\left( \frac{\| x - c_i\|}{2\sigma_i^2}\right)
+\label{eq:rbf}
+\end{equation}
+
+The $\sigma_i$ parameter specifies the \textit{width} of the Gaussian and must be
+tuned by hand or using some through some model selection technique along with the
+centers and number of basis functions. Decreasing the width and increasing the
+number of basis functions would result in finer expressibility but also incur a higher
+computational cost. 
+
+The choice of norm in equation \ref{eq:rbf} is not restricted to the Euclidean distance
+and other metric could be used. In \cite{Sugiyama2008} for example, the Geodesic
+distance taken over the graph induced by some MDP is used in an attempt to better
+capture the intrinsic geometry of the manifold.
+ 
+\subsection{Fourier Basis Functions}
+
+The use of fourier basis functions for value function approximation was introduced in
+\cite{Konidaris2011b} but relies on the well established theory or the Fourier analysis.
+
+The nth order Fourier expansion of some univariate periodic function $f$ with period
+$T$ is given by
+\begin{equation}
+\hat{f}(x) = \frac{a_0}{2} \sum_{k=1}^n \left[ a_k \cos\left(k\frac{2\pi}{T} x\right) +
+b_k \sin \left(k \frac{2\pi}{T}x \right) \right]
+\label{eq:fourier}
+\end{equation}
+
+with Fourier coefficients $a_k$ and $b_k$ defined as
+\begin{equation}
+a_k = \frac{2}{T} \int_0^T f(x) \cos \frac{2\pi kx}{T}dx, \; \mbox{and} \; b_k = \frac{2}
+{T} \int_0^T f(x) \sin \frac{2\pi kx}{T}dx
+\end{equation}
+
+Since $V^\optimal$ is unknown, the Fourier coefficients cannot be obtained directly
+and must be thus treated as \textit{weights} in a spirit similar to the other linear
+methods. The Fourier expansion of $f$ results in $2n+1$ terms but
+\cite{Konidaris2011b} shows how it can be simplified to only $n+1$ terms if some
+assumptions are made on the periodicity of the value function. A function $f$ is even if
+$f(x) = f(-x)$, in which case the $\sin$ terms of equation \ref{eq:fourier} can be
+droped. A similar observation can be made if $f$ is odd $-f(x) = f(-x)$ and the
+$\cos$ terms can be omitted. 
+
+
+Setting the period to $T=2$, the \textit{nth order Fourier basis} is thus defined as:
+\begin{equation}
+\phi_i(s) = \cos(i\pi x) \hspace{2mm} \forall i = 0, ..., n
+\end{equation}
+
+The multivariate Fourier expansion of some function $F$ with period T up to order $n$
+bears a similar form
+\begin{equation}
+\hat{F}(\mathbf{x}) = \sum_{\mathbf{c}} \left[ a_c \cos \left( \frac{2\pi}{T} \mathbf{c}
+\cdot \mathbf{x} \right) +  b_c \sin \left( \frac{2\pi}{T} \mathbf{c} \cdot \mathbf{x}
+\right)\right]
+\label{eq:multi-fourier}
+\end{equation}
+
+The $\mathbf{c}$ term in equation \ref{eq:multi-fourier} is the Cartesian power 
+$\mathcal{X}^d$ of the d-dimensional state space such that $\mathcal{c} = [c_1,
+\dots, c_i, \dots, c_d]$ where $c_i \in [0, \dots, n]$. The number of basis functions
+required for the nth order expansion under this scheme would then be $2(n+1)^d$.
+Fortunately using the same argument as for the univariate case, only half of the terms
+must be kept and the ith basis function is defined as
+\begin{equation}
+\varphi(x)_i = \cos \left(  \pi \mathbf{c}^i \cdot \mathbf{x} \right)
+\end{equation}
+
+While Fourier basis severely suffer from the curse of dimensionality, the approach has
+the merit of being simple and effective as suggested by empirical evidences in this
+work and in \cite{Konidaris2011b} . The only choice a practitioner has to make is the
+order of the expansion and reasonable results can usually obtained by using only the
+few first lower frequencies.
