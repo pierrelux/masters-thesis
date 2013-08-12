@@ -103,7 +103,7 @@ identity
 that
 
 \begin{align}
-P &= \mathbf{D}^{-1/2} \left( \mathbf{I} - \laplacian \right) \mathbf{D}^{1/2} \label{eq:rw-similarity} \\
+\mathbf{P} &= \mathbf{D}^{-1/2} \left( \mathbf{I} - \laplacian \right) \mathbf{D}^{1/2} \label{eq:rw-similarity} \\
  &= \mathbf{D}^{-1/2} \left( \mathbf{D}^{-1/2} \mathbf{W} \mathbf{D}^{-1/2} \right) \mathbf{D}^{1/2} \notag \\
  &= \mathbf{D}^{-1} \mathbf{W} \notag
 \end{align}
@@ -248,31 +248,28 @@ The \termidx{Cheeger inequality} relates it to the spectrum of $\laplacian$ as f
 \end{equation}
 \end{lem}
 
-The more general graph partitioning problem can be better understood first in terms of
-the graph bipartitioning one. A natural attempt at solving this problem would be to
-express it under a \textsc{min-cut} formulation which could be solved in time
-$\mathcal{O}(n^3)$ using the Ford-Fulkerson algorithm \cite{FordFulkerson1956}. The
+The spectrum of $\laplacian$ can be elegantly exploited for graph partitioning. The problem of graph bipartitioning is first considered before the more general multi-partitioning case. A graph bipartition can be obtained under the \textsc{Min-Cut} formulation and solved in time
+$\mathcal{O}(n^3)$ using the \textsc{Ford-Fulkerson} algorithm \parencite{FordFulkerson1956}. The
 resulting partitions however tend to be highly imbalanced and in certain cases can
-degenerate to singleton partitions \cite{Hagen1992}. A related problem to consider is
-then the \textsc{minimum-width bisection} which attempts at finding a minimum cut
+degenerate to singleton partitions \parencite{Hagen1992}. A related problem to consider is
+then the \textsc{minimum-width bisection} which attempts to find a minimum cut
 with partitions of equal size. Unfortunately, the problem was shown to be
 $\mathcal{NP}$-complete by \cite{Garey1976}. A natural response is then to relax the
 optimization criterion in such a way to maintain balanced partitions without requiring
-them to be of same size. The \termidx{ratio-cut} criterion is defined as \cite{Chuen1989, Chuen1991, Hagen1992} 
+them to be of same size. The \termidx{ratio-cut} criterion is defined by \cite{Chuen1989, Chuen1991, Hagen1992}  as
 
 \begin{equation}
 RCut(S) = \min_S \frac{|E(S, \bar{S})|}{|S| \cdot |S'|}
 \end{equation}
 
-and is very much related to the modified Cheeger constant \ref{eq:cheeger-constant}
-also called the \termidx{isoperimetric number} \footnote{Although some authors seems
-to make no distinction between the terms \cite{ShiMalik2000, Levin2008},
+and is very much related to the modified Cheeger constant 
+also called the \termidx{isoperimetric number} by some author \footnote{Although some authors seems
+to make no distinction between the terms \parencite{ShiMalik2000, Levin2008},
 \cite{Chung1997} shows in chapter 2 how they relate differently to the eigenvalues of
 $\laplacian$.}. Once again,  finding the minimum ratio cut is also $\mathcal{NP}$-
-complete but a spectral relaxation based on the combinatorial Laplacian (see equation
-\ref{eq:unnormalized-laplacian}) is proposed in \cite{Hagen1992}.
+complete but a spectral relaxation based on the combinatorial Laplacian is proposed in \cite{Hagen1992}.
 
-A similar measure called the \termidx{normalized cut} was made popular in \cite{ShiMalik2000} and considers
+A similar measure called the \termidx{normalized cut} was made popular by \cite{ShiMalik2000} and rather tries to optimize
 
 \begin{equation}
 NCut(S) = \frac{|E(S, \bar{S})|}{\vol(S)} + \frac{|E(S, \bar{S})|}{\vol(\bar{S})}
@@ -280,10 +277,8 @@ NCut(S) = \frac{|E(S, \bar{S})|}{\vol(S)} + \frac{|E(S, \bar{S})|}{\vol(\bar{S})
 \end{equation}
 
 Just as the ratio cut, the normalized cut also falls short of an exact solution which is not
-$\mathcal{NP}$-complete \cite{ShiMalik2000}. The \textit{normalized} qualification in
-the name \textit{normalized cut} can however seem misleading as it might imply that
-the normalized Laplacian as defined in equation \ref{eq:normalized-laplacian} is directly
-exploited. Indeed, the optimization problem is first set \cite{Luxburg2007} as
+$\mathcal{NP}$-complete \parencite{ShiMalik2000}. The \textit{normalized} qualification in
+the name \textit{normalized cut} might seem misleading at first glance when considering the following optimization setting \parencite{Luxburg2007} based  on the combinatorial Laplacian.
 \begin{align}
 \min_A \mathbf{f}^\transpose \left( \mathbf{D} - \mathbf{W} \right) \mathbf{f} \\
 \text{subject to} \hspace{2.5mm} \mathbf{D} \mathbf{f} \perp \indicator, \hspace{2.5mm}  \mathbf{f}^\transpose \mathbf{D} \mathbf{f} = \vol(V) \notag \\
@@ -295,7 +290,7 @@ f_i = \begin{cases}
 
 where $\mathbf{D} - \mathbf{W}$ can be recognized to be the combinatorial Laplacian
 as defined in equation \ref{eq:unnormalized-laplacian}.  By relaxing $\mathbf{f}$ to 
-values in $\mathbb{R}$ instead of discrete ones and setting $g = \mathbf{D}^{1/2}
+values in $\mathbb{R}$ and setting $g = \mathbf{D}^{1/2}
 \mathbf{f}$, the problem becomes
 
 \begin{align}
@@ -306,25 +301,21 @@ values in $\mathbb{R}$ instead of discrete ones and setting $g = \mathbf{D}^{1/2
 Under this form, the normalized Laplacian $\laplacian$ (equation 
 \ref{eq:normalized-laplacian}) finally appears. By the Rayleigh-Ritz theorem, this
 quantity is minimized when $\mathbf{g}$ equals the second eigenvector of $\laplacian$
-\cite{Chung1997}. From the real vector $g$, the partition membership can be recovered
-by thresholding its components. The problem of multi-partitioning or \textit{k-way} partitioning can be solved by applying the spectral bipartitioning approach described above in a top-down recursive manner in each partition.
+\parencite{Chung1997}. From the real vector $\mathbf{g}$, the partition membership can be recovered
+by thresholding its components. The problem of multi-partitioning or \textit{k-way} partitioning can be solved by applying the spectral bipartitioning approach in a top-down recursive manner in each partition.
 
 The normalized cut criterion not only seems to provide better empirical results, but also
 provides an intuitive interpretation in terms of random walks. Recall the connection
-drawn from $\mathbf{I} - \laplacian$ to the normalized random walk Laplacian $P$ in
-equation \ref{eq:rw-similarity} where they were shown to be similar. Therefore, if
+between $\mathbf{I} - \laplacian$ and the normalized random walk Laplacian in
+equation \ref{eq:rw-similarity} where they were shown to be similar. If
 $\lambda$ is an eigenvalue of $\laplacian$, then $1 - \lambda$ must be an eigenvector
-of $P$. 
-
-It is shown in \cite{Shi2001} how this can be further exploited to express the Ncut
-criterion in terms of probability distributions from a random walk process over the
-graph. The stationary distribution of a random walk on a connected, non-bipartite graph
-can be shown \cite{Levin2008} to be equal to
+of $\mathbf{P}$. \cite{Shi2001} showed how this can be further exploited to express the \textsc{Ncut}
+criterion in terms of probability distributions of the random walk process. The stationary distribution of a random walk on a connected, non-bipartite graph is equal to  \parencite{Levin2008} 
 \begin{equation}
 \pi_i = \frac{d_i}{\vol(V)}
 \end{equation}
 
-The probability of transitioning from a partition $A$ to $B$ if at the stationary distribution the initial state is in $A$, is written as
+The probability of transitioning from a partition $A$ to $B$ if at the stationary distribution the initial state is in $A$ becomes
 \begin{equation}
 P(A \to B | A) = \frac{\sum_{x \in A, y \in B} \pi(x) P(x, y)}{\pi(S)}
 \label{eq:rw-pr}
@@ -351,7 +342,7 @@ which corresponds to the Cheeger constant presented in equation
 a way to bound the \termidx{mixing time} of Markov chains through the notion of
 \termidx{conductance} (a term referring to the same Cheeger constant or the bottleneck
 ratio presented here). The notion of mixing time can described intuitively as the number
-of steps necessary for Markov chain to reach its stationary distribution. Since it is the asymptotic behavior of some Markov chain that is involved, the number of steps involved would not be finite. It is therefore customary to define the notion of mixing time as being \textit{close to} the steady-state distribution \cite{Jerrum1988}.
+of steps necessary for a Markov chain to reach its stationary distribution. It is customary to define the notion of mixing time as the number of steps needed for being \textit{close to} the steady-state distribution \parencite{Jerrum1988}.
 
 \begin{figure}
 \centering 
@@ -366,11 +357,8 @@ graph and with lower probability, transition to different adjacent partition (se
 understood that low conductance would also result in lower probabilities of inter-partition
 jumps.
 
-It has been presented above how the second smallest eigenvector of $\laplacian$
-minimizes the relaxed $NCut$ criterion and can also bound the Cheeger inequality
-\ref{eq:cheeger-constant}. Therefore, it comes as no suprise to see it appearing in many
-bounds on the mixing time under the form of the \termidx{spectral gap} $1 - \lambda_1$ The interested reader is referred to \cite{Jerrum1988, Lovasz1996,
-Levin2008} for some of these results. 
+It has shown above how the second smallest eigenvector of $\laplacian$
+minimizes the relaxed \textsc{NCut} criterion and can also bound the Cheeger inequality. It turns out that it can also bound the mixing time through the \termidx{spectral gap} $1 - \lambda_1$ The interested reader is referred to \cite{Jerrum1988, Lovasz1996, Levin2008} for some of these results. 
 
 \section{Relevance for Options Discovery}
 \label{sec:ndmc}
@@ -378,52 +366,47 @@ The definition of what makes for \textit{interesting} options has remained vague
 defined throughout the vast body of work on bottleneck-like approaches in
 reinforcement learning. The intuition developed in this chapter might provide further
 development on this question. After having distilled the essence of the bottleneck
-concept through the graph Laplacian, it is also easier to obtain an historical perspective
-along the work on \textit{nearly completely decomposable Markov chains}
+concept through the graph Laplacian, it is also easier to take an historical perspective
+and situate it along the work on \textit{Nearly-Completely Decomposable Markov Chains} (NCD).
 
-It has been shown in this chapter how the optimal bipartitioning problem relates to the
-cheeger constant or bottleneck ratio which in turn, provide bounds on the mixing time
+It was show in this chapter how the optimal graph bipartitioning problem relates to the
+Cheeger constant or bottleneck ratio which in turn, provide bounds on the mixing time
 of Markov chains. It might seem then that bottlenecks allow for the discovery of fast
 mixing regions of the state space. In the planning problem, fast mixing might translate
 into computational speedup, making policies \textit{simpler} to compute in those
 regions. Efficient random sampling techniques of large state spaces are also often
-concerned fast mixing time \cite{Boyd2004}. In reinforcement learning, the same
+concerned with fast mixing time \parencite{Boyd2004}. In reinforcement learning, the same
 problem would be translated under the question of designing smart \textit{exploration}
-strategies. Optimal partitioning of the MDP-induced graph Laplacian could thus help
+strategies. Optimal partitioning of the MDP-induced graph Laplacian could thus help to
 identifying regions of fast mixing time and create options tailored for exploration.
 
 It also seems that good options are those which are intrinsically \textit{simple}, acting as
-elementary building building blocks of increasingly complex hierarchies. Traces of this
-ideal of simplicity can be observed under different forms. For example, its is
-known from\cite{Shi2001}, that the stochastic matrix $P$ has piecewise constant
-eigenvectors with respect to the $NCut$ partitioning. This suggests that optimal
+elementary building building blocks of an increasingly complex hierarchy. Traces of this
+ideal of simplicity can be found under different forms. For example, it is
+known from \parencite{Shi2001}, that the stochastic matrix $\mathbf{P}$ has piecewise constant
+eigenvectors with respect to the \textsc{NCut} criterion. This suggests that optimal
 partitions can be described more succinctly (simply). The authors also note the
-potential connection with the notion of \termidx{lumpability} introduced in
-\cite{Kemeny1976}. Lumpability essentially consists in aggregating states of similar
-dynamics so as to simplifying Markov chains when confronted with the curse of
-dimensionality. 
+potential connection with the notion of \termidx{lumpability} introduced by
+\cite{Kemeny1976}. Lumpability is concerned with the aggregation of states with similar
+dynamics to simplify large Markov chains. 
 
-The idea of matrix decomposition was initiated in \cite{AndoFisher1963} from
+The idea of matrix decomposition was initiated by \cite{AndoFisher1963} from
 economics for the study of linear dynamical systems with \textit{nearly decomposable}
 structures. The class of Markov chains with strong intra-cluster interactions and weak
-inter-cluster ones has then been studied under the name of \textit{nearly completely
-decomposable Markov chains} (NDMC) \cite{Gaitsgori1975} and covered by
-\cite{Courtois1977} in a book on queuing theory. The control problem for Markov chains
+inter-cluster ones has then been studied under the name of \textit{Nearly Completely
+Decomposable Markov chains} (NCD) \parencite{Gaitsgori1975}.
+\cite{Courtois1977} also dedicated a book topic in the field of queuing theory. The control problem of Markov chains
 with such structure was considered in \cite{Teneketzis1980, Delebecque1981,
-Phillips1981, Coderch1983} building upon the Courtois' pertubational aggregation
-decomposition. This approach treats the \textit{slower} inter-cluster transitions as
+Phillips1981, Coderch1983} building upon the Courtois' work. This approach treats the \textit{slower} inter-cluster transitions as
 matrix perturbations. Similar ideas are also brought closer to the framework of \mdps
 with \cite{Haviv1985, Aldhaheri1991, Zhang1997}. 
 
 From an information theoretic point of view, lumpability can be seen as a lossy
-compression scheme \cite{Lindqvist1978}, \cite{Watanabe1960}. On the more general
+compression scheme \parencite{ Watanabe1960, Lindqvist1978}. On the more general
 topic of graph clustering, the  \textsc{infomap} algorithm of \cite{Rosvall2008} also
 exploits this compression intuition. By taking random walks in the graph, their
-algorithms seeks a partitioning of \textit{minimum description length}. More recently,
-\cite{Deng2011} gave a characterization of the optimal aggregation of NDMC systems in
-terms of the Kullback-Leibler divergence. They show that optimal partitioning yields
+algorithms seeks a partitioning of \textit{minimum length}. More recently,
+\cite{Deng2011} gave a characterization of the optimal aggregation of uncontrolled NCD systems in
+terms of the Kullback-Leibler divergence. They showed that optimal partitioning yields
 aggregates of maximum \textit{predictability} as measured by the mutual information
-between $X(t)$ and $X(t+1)$. It should be stressed that the applicability of these results
-were constrained to the uncontrolled case. Similar derivations could be attempted in the
-controlled case only by considering the rate distortion for a fixed value function such as
-in \cite{Still2012}.
+between $X(t)$ and $X(t+1)$. Similar derivations could be attempted for MDPs by considering the rate distortion for a fixed value function as proposed in  \cite{Still2012} for the problem of exploration.

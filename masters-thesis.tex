@@ -75,7 +75,7 @@ citecolor = [HTML]{0000FF},
 \usepackage{showidx}
 \makeindex
 
-\usepackage[citestyle=authoryear]{biblatex}
+\usepackage[backend=biber, citestyle=authoryear, bibstyle=authoryear, isbn=false, url=false, doi=false, eprint=false, natbib=false, sorting=nty, uniquename=init]{biblatex}
 \addbibresource{library.bib}
 
 \begin{document}
@@ -135,7 +135,7 @@ the degree of Master of Science.
 \pagenumbering{roman}
 \renewcommand{\abstractname}{Acknowledgements}
 \begin{abstract}
-I would like to thank everyone with whom I had the chance to share sudden bursts of 
+I would like to thank everyone with whom I had the chance to share my 
 enthusiasm upon exploring new ideas; those who gave me the freedom to fail, thinker,
 and be slightly obsessed on certain days.
 
@@ -148,7 +148,7 @@ I am deeply grateful to my supervisor Doina Precup, Amir-massoud Farahmand, and 
 \clearpage
 \renewcommand{\abstractname}{Abstract}
 \begin{abstract}
-The bottleneck concept in reinforcement learning has played a prominent role in automatically finding temporal abstractions from experience. Lacking significant theory, it  has been regarded by some as being merely a \textit{trick}. This thesis attempts to provide elements from spectral graph theory to support it while gaining better intuition about the shortcomings of its various instantiations. A connection to the theory of Nearly Decomposable Markov Chains is also drawn and shows great promise. An options discovery algorithm explainable in terms of spectral graph clustering is proposed and is the first of its kind to be applicable in continuous state spaces. As opposed to other similar approaches, this one has running time $\mathcal{O}(mn^2)$ rather than $\mathcal{O}(n^3)$ making it suitable to much larger domains than the typical \textit{grid worlds}.
+The bottleneck concept in reinforcement learning has played a prominent role in automatically finding temporal abstractions from experience. Lacking significant theory, it  has however been regarded by some as being merely a \textit{trick}. This thesis attempts to provide elements from spectral graph theory to support it while also gaining better intuition about its shortcomings. A connection to the theory of Nearly Decomposable Markov Chains is also drawn and shows great promise. An options discovery algorithm explainable in terms of spectral graph clustering is proposed and is the first of its kind to be applicable in continuous state spaces. As opposed to other similar approaches, this one has running time $\mathcal{O}(mn^2)$ rather than $\mathcal{O}(n^3)$ making it suitable to much larger domains than the typical \textit{grid worlds}.
 \end{abstract}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -226,7 +226,4 @@ L'identification automatique de goulots d'étranglement dans la structure de sol
 %\bibliography{library}
 %\bibliographystyle{plain}
 \printbibliography
-
-%\printindex
-
 \end{document}
