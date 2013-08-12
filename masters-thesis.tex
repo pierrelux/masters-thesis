@@ -10,9 +10,7 @@
 \setheadfoot{13pt}{26pt}
 \setheaderspaces{*}{13pt}{*}
 \checkandfixthelayout
-
 \DoubleSpacing
-
 \setsecnumdepth{subsubsection}
 \headstyles{default}
 \chapterstyle{ell}
@@ -41,9 +39,6 @@ citecolor = [HTML]{0000FF},
 \usetikzlibrary{shapes,arrows}
 \usepackage{standalone}
 \usepackage[boxed]{algorithm2e}
-
-\newcommand*{\pretoctitle}[1]{{\clearpage\centering \vspace*{-\topfiddle}#1\par}}
-\newcommand{\asuacknowledgements}{\pretoctitle{ACKNOWLEDGEMENTS}}
 
 % Custom commands
 \newcommand{\rvs}{r.v.'s\xspace}
@@ -75,9 +70,13 @@ citecolor = [HTML]{0000FF},
 \newtheorem{conj}{Conjecture}[section]
 \newtheorem{exmp}{Example}[section]
 
-\usepackage[utf8]{inputenc} % Force UTF-8 input encoding
+\usepackage[utf8]{inputenc}
+\usepackage{csquotes}
 \usepackage{showidx}
 \makeindex
+
+\usepackage[citestyle=authoryear]{biblatex}
+\addbibresource{library.bib}
 
 \begin{document}
 
@@ -224,8 +223,9 @@ L'identification automatique de goulots d'étranglement dans la structure de sol
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Bibliography
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\bibliography{library}
-\bibliographystyle{plain}
+%\bibliography{library}
+%\bibliographystyle{plain}
+\printbibliography
 
 %\printindex
 

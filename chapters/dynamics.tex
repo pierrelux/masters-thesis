@@ -1,28 +1,24 @@
-
-Graph theory has deep ramifications in almost every mathematical fields. It does not come as a surprise then to consider taking a graph perspective of \mdps. As it will be shown below, spectral graph theory provides powerful
-tools for studying the dynamical properties of Markov chains. The graph
-representation of Markov chains will make matrix theory and linear
-algebra sufficient tools for proving rich results elegantly. Some of the early
-applications making use of this connection can be traced back to some early work by \cite{SimonAndo1961, DonathHoffman1973, Fiedler1973}.
+Graph theory has deep ramifications in many fields. The theory of \mdps in one such example where taking a graph perspective provides a natural language for describing and understanding fundamental properties. As shown in this section, spectral graph theory provides powerful
+tools for studying the dynamical properties of Markov chains.  Some of the early
+applications of this connection can be traced back to the work of \cite{SimonAndo1961, DonathHoffman1973, Fiedler1973}.
 
 Spectral graph theory will provide the theoretical justification for the heuristic approach
 to options discovery algorithm proposed in this work. This presentation should be seen
-as an initial foray towards a better theoretical grounding of the bottleneck concept. The notion of random walk on an arbitrary graph
-$\mathcal{G}$ will first be introduced, followed by a characterization of the properties of the graph Laplacian and its representation for MDPs. It will be then shown how
+as an initial foray towards a better theoretical understanding of the bottleneck concept. Random walk  processes on arbitrary graphs
+$G$ will first be introduced, followed by a characterization of the properties of the graph Laplacian and its definition for MDPs. It will then be shown how
 graph partitioning can be achieved on the basis of the dynamics induced by the random
-walk process. Finally, it will be argued that the mixing time property of MDP-induced
-graphs is relevant to the problem of options discovery and spectral graph partitioning
-can provide the necessary construction. 
+walk process. Finally, it will be argued that the mixing time property of the MDP-induced
+graph is relevant to the problem of options discovery and can be related to spectral graph partitioning.
 
 \section{Random Walk}
 \label{sec:random-walk}
 The notion of random walk is necessary in the presentation of some important spectral
 properties related to the graph Laplacian in section \ref{sec:laplacian}. Given a graph
 $G$, we can generate a random sequence by picking a vertex uniformly at
-random in the neighborhood of an initial vertex and carrying on the procedure over the
+random in the neighborhood of an initial vertex and carrying on the procedure over to the
 newly obtained vertex. This procedure corresponds to the realization of a type of
 random process called \textit{random walk}. More precisely, we define a \textbf{simple
-random walk} on a graph $G$ as a Markov Chain having $V$ as state-space and for
+random walk} on a graph $G = (V, E)$ as a Markov Chain with state space $V$ and for
 which the transition matrix is given by:
 
 \begin{equation}
@@ -32,16 +28,16 @@ P_{ij} = \begin{cases}
 \end{cases}
 \end{equation}
 
+$w_{ij}$ above is an edge weight and $d(i)$ is the degree of $i$.
+
 Using matrix notation, the stochastic matrix of the random walk can be written as
 \begin{equation}
-P = \mathbf{D}^{-1}\mathbf{W}
+\mathbf{P} = \mathbf{D}^{-1}\mathbf{W}
 \label{eq:random-walk}
 \end{equation}
 
-If each vertex of $G$ has the same degree -- in which case $G$ is said to be \textit{d
-regular} -- the stationary distribution is the uniform distribution. 
-
-% Say that P is reversible
+If each vertex of $G$ has the same degree, in which case $G$ is said to be \textit{d
+regular}, the stationary distribution of the random walk is the uniform distribution. 
 
 \section{Graph Laplacian}
 \label{sec:laplacian}
@@ -64,11 +60,11 @@ d_v & \mbox{if $u = v$,} \\
 \end{equation}
 
 Where $\mathbf{D} = \text{diag}(d_1, d_2, \dots, d_n)$ and $\mathbf{W}$ are the
-diagonal degree and weight (adjacency) matrix for $G$ respectively.
+diagonal degree and weight (adjacency) matrices for $G$ respectively.
 
-When stochastic matrices are being manipulated, it is customary to work with the
-\textit{normalized}
-version of the Laplacian such that
+Because of its easier stochastic interpretation, the \textit{normalized} version of the graph Laplacian is often preferred. The interested reader is referred to the highly influential monograph by \cite{Chung1997} which offers an in-depth treatment on the topic.
+
+The normalized graph Laplacian is defined as
 \begin{equation}
 \laplacian = \mathbf{D}^{-1/2} \mathbf{L} \mathbf{D}^{-1/2} = \mathbf{I} -
 \mathbf{D}^{-1/2} \mathbf{W} \mathbf{D}^{-1/2}
@@ -92,11 +88,11 @@ Clearly, $\laplacian$ is also symmetric since
 \laplacian^\transpose = \left(\mathbf{D}^{-1/2} \right)^\transpose \mathbf{L}^\transpose \left( \mathbf{D}^{-1/2} \right)^\transpose = \laplacian
 \end{align}
 
-The spectral theorem for symmetric matrices \cite{Watkins2010} also ensures that
+The spectral theorem for symmetric matrices \parencite{Watkins2010} also ensures that
 $\laplacian$ only has real eigenvalues. Furthermore, eigenvectors corresponding to
 distinct eigenvalues must be orthogonal.
 
-The normalized Laplacian is closely related to the transition matrix $P$ of the random
+The normalized Laplacian is closely related to the transition matrix $\mathbf{P}$ of the random
 walk process presented in section \ref{sec:random-walk}. It can be seen through the
 identity 
 
@@ -112,10 +108,10 @@ P &= \mathbf{D}^{-1/2} \left( \mathbf{I} - \laplacian \right) \mathbf{D}^{1/2} \
  &= \mathbf{D}^{-1} \mathbf{W} \notag
 \end{align}
 
-It can be seen from equation \ref{eq:rw-similarity} that $P$ is similar (in the
+and $\mathbf{P}$ must be similar (in the
 linear algebra sense) to $\mathbf{I} - \laplacian$. It follows that they also share
 the same eigenvalues and the right eigenvectors of $\mathbf{I} -\laplacian$ can be
-obtained from the eigenvectors of $P$ by multiplying them by $\mathbf{D}^{1/2}$
+obtained from the eigenvectors of $\mathbf{P}$ by multiplying them by $\mathbf{D}^{1/2}$
 
 \begin{align}
 P\mathbf{v} &= \lambda \mathbf{v} \notag \\
@@ -126,7 +122,7 @@ P\mathbf{v} &= \lambda \mathbf{v} \notag \\
 \label{eq:similarity-rw}
 \end{align}
 
-Because of this connection to random walks, some authors have defined the \termidx{normalized random walk Laplacian} as
+Because of this connection to random walks, some authors have also defined the \termidx{normalized random walk Laplacian} as
 
 \begin{equation}
 \laplacian_{rw} = \mathbf{D}^{-1} L = \mathbf{I} - \mathbf{D}^{-1} \mathbf{W}
@@ -166,7 +162,7 @@ f^\transpose \laplacian f &= f^\transpose \left( \mathbf{I} - \mathbf{D}^{-1/2} 
 
 Clearly, $f^\transpose \laplacian f \geq 0$, and $\laplacian$ must be positive
 semidefinite. Under the definition of the combinatorial Laplacian, a similar quadratic
-form is induced \cite{Mohar91}
+form is induced \parencite{Mohar91}
 
 \begin{equation}
 f^\transpose L f = \sum_{ij} w_{ij} (f_i - f_j)^2
@@ -174,14 +170,12 @@ f^\transpose L f = \sum_{ij} w_{ij} (f_i - f_j)^2
 
 The quadratic form can be interpreted as a measure of smoothness of a  function over
 the graph. Intuitively, if $f$ is smooth over each pair of vertices, $f^\transpose
-\laplacian f$ will be small. On the other hand, if $f$ locally varies is a more drastic
-manner, this quantity will grow larger.  The weighting factor in equation
+\laplacian f$ must be small. On the other hand, if $f$ locally varies is a more drastic
+manner, this quantity should grow larger. The weighting factor in equation
 \ref{eq:quadratic-form} also helps to understand how local density might influence this
 measure of smoothness. In regions of higher density, the proximity or similarity
 encoded through $w_{ij}$ is higher; hence the greater amplification of the $(f_i - f_j)^2$
-term. This property can be exploited in semi-supervised learning to encode the so-
-called \termidx{cluster assumption} and forcing the decision boundary to lie in low
-density regions \cite{Chapelle2002}.
+term. This property is exploited in semi-supervised learning to encode the so-called \termidx{cluster assumption} and force the decision boundary to lie in low density regions \cite{Chapelle2002}.
 
 % induce regular norm , projection on eigenspace of laplacian produce smoothest
 %approximation, if piecewise smoot should be compressible in some basis
@@ -194,7 +188,7 @@ Consider the \mrp induced by fixing a policy $\pi$ for an MDP and let $\mathbf{P
 denote the corresponding transition probability matrix. As shown earlier, a kind of
 Laplacian closely related to the normalized Laplacian can be obtained from the transition
 matrix of a random walk process. Clearly, $\mathbf{P}^\pi$ also defines a stochastic
-matrix encoding the dynamics proper to policy $\pi$ and the notion of Laplacian can
+matrix encoding the dynamics induced by $\pi$ in the environment.The notion of graph Laplacian can
 naturally be extended for MDPs. 
 
 \begin{defn}
@@ -206,32 +200,30 @@ policy, the \termidx{Laplacian of an MDP} is
 \end{equation}
 \end{defn} 
 
-The Laplacian view of \mdps was adopted by a number of authors \cite{Lamond1989,
-Puterman1994, Filar2007} for the study of their induced Markov chains by the
-decomposition of the transition matrix through generalized inverse. While the term 
-Laplacian is not explicitly mentioned, their analysis fundamentally relies on the
-properties of the so-called \textit{Drazin} inverse \cite{Drazin1958} of $\mathbf{I} -
-\mathbf{P}^\pi$. The work on Proto-Value Functions (PVF) \cite{Mahadevan2009}
-exploits the concept of Laplacian (and terminology) for the purpose of representation
+The Laplacian view of \mdps was adopted by a number of authors \parencite{Lamond1989,
+Puterman1994, Filar2007} for the study of their chain structure. While the term 
+Laplacian was not explicitly used, their analysis relied on the
+properties of the so-called \textit{Drazin} inverse \parencite{Drazin1958} of $\mathbf{I} -
+\mathbf{P}^\pi$. More recently, the work on Proto-Value Functions (PVF) \parencite{Mahadevan2009}
+also exploited the concept and terminology of the graph Laplacian for the purpose of representation
 and control.
 
-An obstacle to studying the spectrum of $\laplacian^\pi$ as defined above lies in the
-difficulty to obtain a diagonalization when the induced Markov chain is not
+An obstacle to studying the spectrum of $\laplacian^\pi$ occurs when the induced Markov chain is not
 reversible. Furthermore, the assumption that $\mathbf{P}^\pi$ is available from an
 existing MDP is problematic. Under the reinforcement learning framework, the transition
-matrix is generally unknown, thus calling for sampling-based methods to estimate it. In
+matrix is generally unknown and it is necessary to resort to sampling-based methods. In
 certain scenarios, the control problem is itself very hard to solve. Therefore, requiring
-the knowledge of $\laplacian^\pi$ to facilitate the problem would be nothing but a
-chicken-and-egg scenario. In the approach proposed in this work, the random walk
-Laplacian would be considered as replacement for practical purposes. Such substitution
+the knowledge of $\laplacian^\pi$ to facilitate the problem would be nothing other than a
+chicken-and-egg scenario. In the approach proposed in this thesis, the random walk
+Laplacian is considered as a practical replacement. Such a substitution
 is also adopted in \cite{Mahadevan2009} for the same reasons.
 
 \section{Graph Partitioning}
 \label{sec:graph-partitioning}
-Through the study of the set of eigenvalues associated with the Laplacian, some remarkable results on 	the subgraph structures can be obtained. The set of problems concerning the optimality of graph cuts with regard to the size of their components is commonly referred to as \termidx{isoperimetric problems}. Edge cuts are of particular interest as it will be shown below that they relate to spectrum of $\laplacian$ through the so-called Cheeger constant. 
+Through the study of the set of eigenvalues associated with the graph Laplacian, some remarkable results on the subgraph structures can be obtained. The set of problems concerning the optimality of graph cuts with regard to the size of their components is commonly referred to as \termidx{isoperimetric problems}. Edge cuts are of particular interest because they relate to spectrum of $\laplacian$ through the so-called Cheeger constant. 
 
 % Define boundary
-Let $A, B \subseteq V$ be subsets of the vertices of a graph $G$ and $E(A, B)$ denote the set of edges having one end in $A$ and the other in $B$. It is also convenient to describe the set of edges having only one end point in $S \subseteq V$ as the \termidx{boundary} \cite{Chung1994}, \termidx{edge boundary}\cite{Chung1997} or \termidx{coboundary} \cite{Mohar91} of $S$, that is
+Let $A, B \subseteq V$ be subsets of the vertices of a graph $G$ and $E(A, B)$ denote the set of edges having one end in $A$ and the other in $B$. It is also convenient to describe the set of edges having only one end point in $S \subseteq V$ as the \termidx{boundary} \parencite{Chung1994}, \termidx{edge boundary} \parencite{Chung1997} or \termidx{coboundary} \parencite{Mohar91} of $S$, that is
 \begin{equation}
 \partial S = \{ \{u, v\} \in E : u \in S \text{ and } v \not \in S \}
 \end{equation}
@@ -242,14 +234,14 @@ The \termidx{volume} for $S$ also corresponds to the sum of the degrees of its v
 \vol(S) = \sum_{x \in S} d_x
 \end{equation}
 
-The \termidx{conductance} of $G$, also known as the \termidx{Cheeger constant} \cite{Chung1997}, is defined as
+The \termidx{conductance} of $G$, also known as the \termidx{Cheeger constant} \parencite{Chung1997}, is defined as
 
 \begin{equation}
 h_G = \min_S h_G(S) \hspace{2.5mm} \text{where} \hspace{2.5mm} h_G(S) = \frac{ |E(S, \bar{S}) |}{\min \left( \vol(S), \vol(\bar{S}) \right)}
 \label{eq:cheeger-constant}
 \end{equation}
 
-The \termidx{Cheeger inequality} relates it to the spectrum of $\laplacian$ as follow \cite{Chung1997}
+The \termidx{Cheeger inequality} relates it to the spectrum of $\laplacian$ as follow \parencite{Chung1997}
 \begin{lem}
 \begin{equation}
 2h_g \geq \lambda_1 > \frac{h_g^2}{2}

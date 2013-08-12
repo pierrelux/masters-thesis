@@ -1,68 +1,46 @@
-
-It has been shown in the previous section how the value function over large 
+It was shown in the previous chapter how the value function over large 
 (possibly infinite)
 state spaces can be represented compactly using function approximation. It would
 then appear natural to harness a similar idea for exploiting \textit{temporal
-regularities} of the problem at hand. In the context of planning, reasoning at different
-abstract time scales can drastically reduce the time complexity for finding a solution. 
-The importance of temporal abstraction can be appreciated easily under everyday
-scenarios such as preparing coffee, going on a camping trip, changing a bicycle tire,
-etc. When preparing an Espresso, a Barista might need to make use of her
-\textsc{turn-on-the-espresso-maker} ability, followed by \textsc{grind-coffee-beans},
-\textsc{tamp-the-espresso}, \textsc{lock-the-portafilter}, and \textsc{pull-a-shot}.
-Capitalized expressions where used in this last example to highlight the fact that these
-\textit{actions} last arbitrary amount of time and should rather be seen as
-\textit{closed-loop} policies. Although the tasks of preparing coffee might seem trivial
-even for the inexperienced, it does rely on a complicated sequence of \textit{atomic}
-decisions procedures which would be difficult to obtain with absolutely no prior
-knowledge. 
+regularities}. In the context of planning, reasoning at different
+abstract time scales can drastically reduce the problem complexity.
+The importance of temporal abstraction can be overlooked when considering \textit{simple} everyday
+human tasks such as preparing coffee, going on a camping trip, changing a bicycle tire,
+etc. A decomposition of these activities at the level of muscle twitches would however quickly expose 
+the impossibility of carrying any form of learning at this level. A form of hierarchical organization must then exist from the micro to the macro-scales. Under the view adopted in this work, the task of preparing coffee would rather consist in a sequence of \textit{coarse} closed-loop policies executed sequentially towards the overall goal of having coffee in a cup. 
 
-Many formalisms have been proposed to cast this problem efficiently in the framework
-of reinforcement learning: the MAXQ method \cite{Dietterich1998} and Hierarchical
-Abstract Machines (HAM) \cite{Parr1997} or Macro-Actions \cite{Hauskrecht1998} for
-example. These other approaches will not be covered as the options framework of 
-\cite{Sutton1999} will be adopted in this work. For a survey of the earlier attempts, the
+Many authors have tried to formalize this idea under the framework
+of reinforcement learning: the \textsc{MAXQ} method of \cite{Dietterich1998}, the Hierarchical
+Abstract Machines (HAM) of \cite{Parr1997} or Macro-Actions of \cite{Hauskrecht1998} for
+example. These other approaches will not be covered in this thesis and the options framework of 
+\cite{Sutton1999} will be adopted. For a survey of the early work on HRL, the
 interested reader is referred to \cite{StolleThesis2004, Sutton1999}.
 
 \section{Options Framework}
 \begin{defn}
 An \termidx{Option} is a triple $\langle \mathcal{I} \subseteq \mathcal{X},\;
-\mathcal{\pi} : \mathcal{X} \to \Omega(\mathcal{A}),\; \beta : \mathcal{X} \to [0, 1]
+\mathcal{\pi} : \mathcal{X} \times \mathcal{A} \to [0, 1],\; \beta : \mathcal{X} \to [0, 1]
 \rangle$ consisting of an initiation set, a policy $\pi$ and a termination condition
 $\beta$.
 \end{defn}
 
-Given a state $x \in \mathcal{X}$ and option $o \in \mathcal{O}$, $o$ can be
-executed in a \textit{call-and-return} fashion up to termination, dictated by $\beta$,
-only if $x \in \mathcal{I}$. The initiation component is meant to facilitate decision
-taking by reducing the size of possible options to consider for any given state. Its
-presence also allows easier bridging with the previous work in STRIPS-style
-\cite{Fikes1972} planning. In many efforts to use the options framework \todo{cite an
-example}, the definition of this component is neglected and it is assumed that options
-are available everywhere. The present work however proposes a method to alleviate
-this difficulty by automatically curtailing the set of admissible states.
+An option $o \in \mathcal{O}$ can be executed in a \textit{call-and-return} fashion only if under the current state $x \in \mathcal{X}$, $x \in \mathcal{I}$. When $o$ is chosen, the agent acts according to the option policy $\pi$ until  $\beta$ dictates termination, at which point the agent must choose a new option again.
 
-The options framework is at the crossroad of regular \mdps and semi-\mdps
-\cite{Bradtke1994}. It considers a base \mdp overlaid with variable length course of
+The initiation component is meant to facilitate the decision procedure by reducing the number of possible options to consider at a given state. Its presence could also had been motivated by  historical considerations to accommodate STRIPS-style planning \parencite{Fikes1972} more easily. The definition of the initiation set is sometimes neglected  by some authors, assuming that all options are available everywhere. The algorithm proposed in this thesis automatically curtails admissible states to form well-defined initiation set for every option. It should be noted finally that primitive actions can be seen as a special kind of options which are available everywhere, have a policy which always chooses the same action, and last exactly one step. 
+
+The options framework is at the crossroad of  \mdps and semi-\mdps of
+\cite{Bradtke1994}. It considers a base MDP overlaid with variable length courses of
 action represented as options. It is shown in \cite{Sutton1999} (theorem 1) how an
-MDP and pre-defined set of options form a semi-\mdp and can thus reuse most of the
-known theory on the subject. As opposed to the general theory of SMDP that treats
+MDP and a pre-defined set of options form a semi-\mdp. Most of the theory on SMDP can
+thus be reused for options. As opposed to the usual theory of SMDP that treats
 extended actions as indivisible and \textit{opaque} decision units, the options
-framework also allows to look at the structure \textit{within}. It can also accommodate
-both Markov options and semi-Markov ones. In the example coffee domain presented
-above, \textsc{pull-a-shot} would be an option defined by a \textit{timeout} and not
-only by the current state. It would then most likely be semi-markov option unless the
-state representation is changed to support the non-markovianity.
+framework allows to look at the structure \textit{within}. Furthermore, options can be either Markov or semi-Markov. In the fictitious coffee domain, waiting a predefined amount of time for the coffee to percolate would most likely be a semi-markov option unless the
+state representation is changed to compensate for the non-markovianity.
 
-With this formulation, primitive actions can be seen as a special kind of options which
-is available everywhere, has a policy always choosing the same action, and lasting
-exactly one step. 
 
 \section{Bellman Equations for Options}
 
-Let $\mu : \mathcal{X} \times \mathcal{O} \to [0, 1]$  be a general (Markov or semi
-Markov) policy where $\mathcal{O}$ is a set of options (containing primitive actions or
-not). The value of $\mu$ is defined as
+Let $\mu : \mathcal{X} \times \mathcal{O} \to [0, 1]$  be a general (Markov or semi-Markov) policy where $\mathcal{O}$ is any set of options. The value of $\mu$ is defined as
 
 \begin{equation}
 V^\mu(x) = \expectation \left[ R_{t+1} + \dots + \gamma^{k-1}R_{t+k} + \gamma^k
@@ -71,10 +49,8 @@ V^\mu(X_{t+k})  \given \varepsilon(x, \mu, t) \right]
 \end{equation}
 
 where $k$ is a random variable denoting the duration of the first option selected by
-$\mu$ and $\varepsilon(x, \mu, t)$ is the event that the option policy $\mu$ is
-executing at time $t$ in state $x$. Once $\mu$  terminates, it presumably selects  a
-different option and the process is repeated until the episode terminates. Similarly, we
-can define an \termidx{option value function} for control as 
+$\mu$ and $\varepsilon(x, \mu, t)$ is the event that the policy over options $\mu$ is
+executing at time $t$ in state $x$. Similarly, an \termidx{option-value function} for control can be defined as 
 \begin{align}
 Q^\mu(x, o) &= \expectation \left[ R_{t+1} + \dots + \gamma^{k-1}R_{t+k} +
 \gamma^k V^\mu(X_{t+k})  \given \varepsilon(x, o, t) \right] \notag \\
@@ -86,7 +62,7 @@ t) \right]
 
 $\mathcal{O}_x$ in the equation \ref{eq:option-value-function} is the subset of
 options which can be initiated under state $x$. The optimality principle is carried over
-the following set of optimal Bellman equations
+to the following set of optimal Bellman equations
 
 \begin{equation}
 V_{\mathcal{O}}^\optimal(x) = \max_{o \in \mathcal{O}_x} \expectation \left[ R_{t+1} + \dots + \gamma^{k-1}R_{t+k} + \gamma^k V_{\mathcal{O}_x}^\optimal(X_{t+k})  \given \varepsilon(x, o, t) \right]
@@ -104,25 +80,22 @@ Q_{\mathcal{O}}^\optimal(x, o) &= \expectation \left[ R_{t+1} + \dots +
 \label{eq:optimal-option-value-function}
 \end{align}
 
-If the optimal option value function (eq \ref{eq:optimal-option-value-function}) is
+If the optimal option value function is
 available, the greedy policy is guaranteed to be optimal. A policy over options is
 optimal if given a set of options, its underlying option value function is the optimal
-value function, i.e. $V^{\mu_\mathcal{O}^\optimal}(x) = V_\mathcal{O}^\optimal(x)\;
-\forall x \in \mathcal{X}$.
+value function, i.e. $V^{\mu_\mathcal{O}^\optimal}(x) = V_\mathcal{O}^\optimal(x)\; \forall \; x \in \mathcal{X}$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Learning Behavior Policies
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Learning Behavior Policies}
 
-Assuming that a options set $\mathcal{O}$ is specified, existing theory
-\cite{Puterman1994, Bradtke1994} from semi-\mdps in continuous time can be
-applied to solve the control problem. The SMDP model considers decision making at
-\textit{decision epochs} spaced by random time intervals during which the system
-dynamics are of no interest. The optimal control problem can be solved by an
-extension of Q-learning to the SMDP case.
+Assuming that an options set $\mathcal{O}$ is specified, existing theory
+of  semi-\mdps in continuous time can be
+applied to solve the control problem \parencite{Puterman1994, Bradtke1994}. Under the SMDP model, decision are taken at certain \textit{epochs} spaced by random time intervals during which the system dynamics can be arbitrary. The optimal control problem can be solved by an
+extension of \textsc{Q-Learning} to the SMDP case.
 
-\begin{defn}{SMDP Q-Learning}
+\begin{defn}{\textsc{SMDP Q-Learning}}
 \begin{equation}
 Q_{t+1}(x, o) \leftarrow Q_{t}(x, o) + \alpha \left[ \mathcal{R} + \gamma^k
 \max_{o^\prime \in \mathcal{O}_x^\prime} Q_{t}(x^\prime, o^\prime) -
@@ -135,17 +108,12 @@ The semantics of equation \ref{eq:smdp-qlearning} holds the under the event of
 $\varepsilon(x, o, t)$ where option $o$ is executed for $k$ time steps with cumulative
 discounted reward $\mathcal{R}$. Convergence results are provided in \cite{Parr1998}.
 
-An identical algorithmic construct called \termidx{Macro Q-learning} is also often
-encountered in the literature. It comes from the work on Macro-actions of
-\cite{Mcgovern1997} as an extension of the deterministic macro-operators
-\cite{Korf1985} to closed-loop policies. It might have been that the options framework
-had not yet beaten the pathways rigorously enough that the authors of
-\cite{Mcgovern1997} decided use a different terminology. 
-
-As opposed to the more general SMDP Q-Learning algorithm of equation
-\ref{eq:smdp-qlearning}, Macro Q-Learning treats macro-actions (options in this case)
-and primitive actions separately: an SMDP update rule is applied for macro-actions
-while primitive actions are updated using \ref{eq:qlearning-update}. Clearly, SMDP Q-learning encompasses Macro Q-Learning and can be expressed identically as
+An identical algorithmic construct called \textsc{Macro Q-Learning} is also often
+encountered in the literature. It stems from the work on Macro-actions by
+\cite{Mcgovern1997} in an attempt to extend the deterministic macro-operators of
+\cite{Korf1985} to closed-loop policies. As opposed to the more general \textsc{SMDP Q-Learning} algorithm of equation \ref{eq:smdp-qlearning}, \textsc{Macro Q-Learning} treats macro-actions and
+and primitive actions separately. The SMDP update rule is applied for macro-actions
+while primitive actions are updated using \ref{eq:qlearning-update}. Clearly, \textsc{SMDP Q-learning} encompasses \textsc{Macro Q-Learning} and can be expressed identically as
 
 \begin{equation}
 Q_{t+1}(x, o) \leftarrow Q_{t}(x, o) + \alpha \left[ \mathcal{R} + \gamma^k
@@ -153,54 +121,46 @@ Q_{t+1}(x, o) \leftarrow Q_{t}(x, o) + \alpha \left[ \mathcal{R} + \gamma^k
 Q_t(x, o) \right]
 \end{equation}
 
-but with the only constraint that the set of options $\mathcal{O}$ must contain
-primitives actions wrapped as options.
-
-\textsc{Macro Q-Learning} is thus equivalent to \textsc{SMDP Q-Learning} where the
+but where $\mathcal{O}$ necessarily contains all of the primitive actions wrapped as options.\textsc{Macro Q-Learning} is thus equivalent to \textsc{SMDP Q-Learning} where the
 options set $\mathcal{O}$ is augmented with single-step options for each primitive
 action.
 
 \subsection{Intra-Option Learning}
 
-In order for the Q-Learning algorithm in equation \ref{eq:smdp-qlearning} to provide a
+In order for the \textsc{SMDP Q-Learning} algorithm in equation \ref{eq:smdp-qlearning} to provide a
 good estimate of the optimal option value function, sufficient experience must be
-obtained about the option set at every states. While executing an option to completion,
-valuable fragments of experience are completely ignored rendering the SMDP methods
-highly sample-inefficient.
+obtained about every option. While executing an option to completion, fragments of experience of experience relevant for the current option could potentially be used to learn about other options. Since  it is possible to look \textit{within} an option, such an idea can be realized and leading to a sample efficient algorithm.
 
-Intra-option learning is an off-policy algorithm which tries to leverage the valuable
-content \textit{within} the options. While an option is executing, it simultaneously
+\textsc{Intra-Option Learning} is an off-policy algorithm which leverages the valuable
+experience taking place \textit{within} options. While an option is executing, it can simultaneously
 updates the value function estimate of all the consistent options which would have had
-chosen the same action under a given state. It is thus required that the options be
-defined by deterministic policies so that this idea of consistency can be established. 
-By virtue of being an off-policy method, intra-option learning also has the potential of
-learning about nonterminating options. 
+taken the same action under a given state. It is thus required that the options be
+defined using deterministic policies so that this idea of consistency can be established. 
 
-\begin{defn}{Intra-option value learning}
+\begin{defn}{\textsc{Intra-Option} Value Learning}
 \begin{align}
 U(x, o) &= (1 - \beta(x))Q_t(x, o) + \beta(x) \max_{o^\prime \in \mathcal{O}} Q_t(x, o^\prime) \\
 Q_{t+1}(x, o) &= Q_t(x, o) + \alpha \left[ R_{t+1} + \gamma U(x, o) - Q_t(x, o) \right]
 \label{eq:intra-option-learning}
 \end{align}
-The update rule takes place under the event $\varphi(x, o, t)$ after each primitive
-transition and is applied over all other consistent options for which $\pi(X_t) = A_t$.
+The update rule takes place under the event $\varepsilon(x, o, t)$ after each primitive
+transition and is applied over every other consistent option for which $\pi(X_t) = A_t$.
 \end{defn}
 
-Intra-Option learning being an off-policy method, it is susceptible to suffer from i
-nstabilities and divergence issues in a similar way to the classical Q-Learning algorithm
+\textsc{Intra-Option Learning} being an off-policy method, it is susceptible to suffer from instabilities and divergence issues just as \textsc{Q-Learning}
 with function approximation. GQ($\lambda)$ was introduced in \cite{Maei2010} as an
-extension of Q-Learning but with special treatment against the aforementioned
-problems. While the theory for GQ($\lambda$) is theoretically correct, empirical
-evidences remain to be gathered to better understand its behavior. Importance sampling
+extension of \textsc{Q-Learning} but with special treatment against the aforementioned
+problems. Although the theory for GQ($\lambda$) is provably correct, sufficient empirical
+understanding is still lacking. Importance sampling
 corrections similar as those used in \cite{Precup2001} for off-policy TD($\lambda$)
-could then be used as a substitute. 
+could be used as a substitute to GQ($\lambda$).
 
-Finally, in order to learn an option's policy $\pi$, it is customary to adopt the notion of 
-\termidx{subgoal}. Options can be seen as optimizing some intrinsic notion of reward
-consistent with the overall task's objective. A \termidx{terminal subgoal value} assigns a
-value for reaching the terminal states of an option as determined by $\beta$. A subgoal
+Finally, in order to learn an options policy $\pi$, it is customary to adopt the notion of 
+\termidx{subgoals}. Subgoal options can be seen as optimizing some intrinsic notion of reward
+consistent with the overall task objective. A \termidx{terminal subgoal value} assigns a
+value for reaching the terminal states of an option determined by $\beta$. A subgoal
 value function thus arises from the combination of the original underlying MDP plus the
 overlaid discounted subgoal value function. This concept is often referred to as a 
-\termidx{pseudo-reward} function: a term originally coined in \cite{Dietterich1999}
-about the MAXQ framework.	
+\termidx{pseudo-reward} function: a term coined in \cite{Dietterich1999}
+about the \textsc{MAXQ} framework.	
 

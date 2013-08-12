@@ -13,7 +13,7 @@ over sampled states and studying the dynamical properties of random walks over t
 graph rather than the MC induced by fixing an optimal policy for an MDP. This reduction is not without consequence as the precious optimality-preserving transitions of $\mathbf{P}_\pi$ are now completely ignored. The random walk Laplacian will however still capture relevant geometrical features of the state space, which in certain environments,  also reflect optimal structures of the solution space. \cite{Mahadevan2007} also faced a similar trade-off but argues for its merits in transfer learning.
 
 \section{Graph Construction}
-\label{ref:proximitygraphs}
+\label{sec:proximitygraphs}
 
 When dealing with a discrete state space, the task of estimating the underlying manifold structure is easier than its continuous counterpart. It would indeed suffice to collect sample trajectories and setting graph edges between any two temporally successive states. In the continuous case, temporal ordering can be enough to reconstruct a single geodesic from a trajectory but merging many of them then becomes problematic. The state space being countably infinite, the probability of encountering the same state twice is null.  In the field of \textit{manifold learning}, a common approach for estimating the low-dimensional manifold of a dataset is to build a \termidx{proximity graph}. The same technique is adopted in this work for estimating the random walk Laplacian.
 
@@ -232,7 +232,7 @@ The symmetric K-NN proximity graph construct was retained for its computational 
 In practice, the choice of $k$ will dramatically impact the clustering. It is often desirable to simply settle on a value which leads to a connected graph. Little is known in the spectral clustering literature about the effect of this parameter and even less about the general problem of choosing an suitable proximity graph construct. \cite{Maier2008} provides some theoretical results about the convergence of graph clustering as a function of $k$ but fail to provide practical guidelines. 
 
 \subsection{Initiation and Termination in Continuous Space}
-
+\label{sec:knnoptions}
 When applying algorithm \ref{alg:knnoptions} in continuous state spaces, the definition of the initiation and termination components needs to be generalized over regions rather than discrete states. Having already constructed a nearest neighbor index for  the proximity graph, an efficient solution is to use it in the definition of the termination function. 
 
 \begin{equation}
