@@ -1,4 +1,4 @@
-Graph theory has deep ramifications in many fields. The theory of \mdps in one such example where taking a graph perspective provides a natural language for describing and understanding fundamental properties. As shown in this section, spectral graph theory provides powerful
+Graph theory has deep ramifications in many fields. The field of \mdps is one such example where taking a graph perspective provides a natural language for describing and understanding many fundamental properties. As shown in this section, spectral graph theory provides powerful
 tools for studying the dynamical properties of Markov chains.  Some of the early
 applications of this connection can be traced back to the work of \cite{SimonAndo1961, DonathHoffman1973, Fiedler1973}.
 
@@ -36,8 +36,7 @@ Using matrix notation, the stochastic matrix of the random walk can be written a
 \label{eq:random-walk}
 \end{equation}
 
-If each vertex of $G$ has the same degree, in which case $G$ is said to be \textit{d
-regular}, the stationary distribution of the random walk is the uniform distribution. 
+If each vertex of $G$ has the same degree, in which case $G$ is said to be \textit{d-regular}, the stationary distribution of the random walk is the uniform distribution. 
 
 \section{Graph Laplacian}
 \label{sec:laplacian}
@@ -129,7 +128,7 @@ Because of this connection to random walks, some authors have also defined the \
 \end{equation}
 
 % Difference operator
-The Laplacian can then be thought as an \termidx{operator} acting upon the space of
+The Laplacian can then be thought of as an \termidx{operator} acting upon the space of
 functions $\mathcal{F} : V \to \mathbb{R}$, with $V$ denoting the vertex set.
 Expressing such functions as vector $f \in \mathbb{R}^{|V|}$, the normalized Laplacian
 can be shown to satisfy
@@ -188,7 +187,7 @@ Consider the \mrp induced by fixing a policy $\pi$ for an MDP and let $\mathbf{P
 denote the corresponding transition probability matrix. As shown earlier, a kind of
 Laplacian closely related to the normalized Laplacian can be obtained from the transition
 matrix of a random walk process. Clearly, $\mathbf{P}^\pi$ also defines a stochastic
-matrix encoding the dynamics induced by $\pi$ in the environment.The notion of graph Laplacian can
+matrix encoding the dynamics induced by $\pi$ in the environment. The notion of graph Laplacian can
 naturally be extended for MDPs. 
 
 \begin{defn}
@@ -223,7 +222,7 @@ is also adopted in \cite{Mahadevan2009} for the same reasons.
 Through the study of the set of eigenvalues associated with the graph Laplacian, some remarkable results on the subgraph structures can be obtained. The set of problems concerning the optimality of graph cuts with regard to the size of their components is commonly referred to as \termidx{isoperimetric problems}. Edge cuts are of particular interest because they relate to spectrum of $\laplacian$ through the so-called Cheeger constant. 
 
 % Define boundary
-Let $A, B \subseteq V$ be subsets of the vertices of a graph $G$ and $E(A, B)$ denote the set of edges having one end in $A$ and the other in $B$. It is also convenient to describe the set of edges having only one end point in $S \subseteq V$ as the \termidx{boundary} \parencite{Chung1994}, \termidx{edge boundary} \parencite{Chung1997} or \termidx{coboundary} \parencite{Mohar91} of $S$, that is
+Let $A, B \subseteq V$ be subsets of the vertices of a graph $G$ and $E(A, B)$ denote the set of edges having one end in $A$ and the other in $B$. It is also convenient to describe the set of edges having only one end point some  $S \subseteq V$ as the \termidx{boundary} \parencite{Chung1994}, \termidx{edge boundary} \parencite{Chung1997} or \termidx{coboundary} \parencite{Mohar91} of $S$, that is
 \begin{equation}
 \partial S = \{ \{u, v\} \in E : u \in S \text{ and } v \not \in S \}
 \end{equation}
@@ -255,7 +254,7 @@ degenerate to singleton partitions \parencite{Hagen1992}. A related problem to c
 then the \textsc{minimum-width bisection} which attempts to find a minimum cut
 with partitions of equal size. Unfortunately, the problem was shown to be
 $\mathcal{NP}$-complete by \cite{Garey1976}. A natural response is then to relax the
-optimization criterion in such a way to maintain balanced partitions without requiring
+optimization criterion in such a way as to maintain balanced partitions without requiring
 them to be of same size. The \termidx{ratio-cut} criterion is defined by \cite{Chuen1989, Chuen1991, Hagen1992}  as
 
 \begin{equation}
@@ -298,13 +297,12 @@ values in $\mathbb{R}$ and setting $g = \mathbf{D}^{1/2}
 \text{subject to} \hspace{2.5mm} \mathbf{g} \perp D^{1/2} \indicator, \hspace{2.5mm}  \| \mathbf{g} \|^2 = \vol(V) \notag \\
 \end{align}
 
-Under this form, the normalized Laplacian $\laplacian$ (equation 
-\ref{eq:normalized-laplacian}) finally appears. By the Rayleigh-Ritz theorem, this
+Under this form, the normalized Laplacian $\laplacian$ finally appears. By the Rayleigh-Ritz theorem, this
 quantity is minimized when $\mathbf{g}$ equals the second eigenvector of $\laplacian$
 \parencite{Chung1997}. From the real vector $\mathbf{g}$, the partition membership can be recovered
 by thresholding its components. The problem of multi-partitioning or \textit{k-way} partitioning can be solved by applying the spectral bipartitioning approach in a top-down recursive manner in each partition.
 
-The normalized cut criterion not only seems to provide better empirical results, but also
+The normalized cut criterion is not only reported to produce better empirical results, but also
 provides an intuitive interpretation in terms of random walks. Recall the connection
 between $\mathbf{I} - \laplacian$ and the normalized random walk Laplacian in
 equation \ref{eq:rw-similarity} where they were shown to be similar. If
@@ -342,7 +340,7 @@ which corresponds to the Cheeger constant presented in equation
 a way to bound the \termidx{mixing time} of Markov chains through the notion of
 \termidx{conductance} (a term referring to the same Cheeger constant or the bottleneck
 ratio presented here). The notion of mixing time can described intuitively as the number
-of steps necessary for a Markov chain to reach its stationary distribution. It is customary to define the notion of mixing time as the number of steps needed for being \textit{close to} the steady-state distribution \parencite{Jerrum1988}.
+of steps necessary for a Markov chain to reach its stationary distribution. It is customary to define the notion of mixing time as the number of steps needed for being \textit{close} to the steady-state distribution \parencite{Jerrum1988}.
 
 \begin{figure}
 \centering 
@@ -353,9 +351,9 @@ of steps necessary for a Markov chain to reach its stationary distribution. It i
 
 The smaller the conductance is, the longer the chain is expected to \textit{mix}.
 Furthermore, the Markov chain would spend more time within a given partition of the
-graph and with lower probability, transition to different adjacent partition (see figure \ref{fig:bottleneck}). It can then be
+graph and with lower probability, transition to a different adjacent partition (see figure \ref{fig:bottleneck}). It can then be
 understood that low conductance would also result in lower probabilities of inter-partition
-jumps.
+transitions.
 
 It has shown above how the second smallest eigenvector of $\laplacian$
 minimizes the relaxed \textsc{NCut} criterion and can also bound the Cheeger inequality. It turns out that it can also bound the mixing time through the \termidx{spectral gap} $1 - \lambda_1$ The interested reader is referred to \cite{Jerrum1988, Lovasz1996, Levin2008} for some of these results. 
@@ -365,18 +363,18 @@ minimizes the relaxed \textsc{NCut} criterion and can also bound the Cheeger ine
 The definition of what makes for \textit{interesting} options has remained vaguely
 defined throughout the vast body of work on bottleneck-like approaches in
 reinforcement learning. The intuition developed in this chapter might provide further
-development on this question. After having distilled the essence of the bottleneck
+developments on this question. After having distilled the essence of the bottleneck
 concept through the graph Laplacian, it is also easier to take an historical perspective
 and situate it along the work on \textit{Nearly-Completely Decomposable Markov Chains} (NCD).
 
 It was show in this chapter how the optimal graph bipartitioning problem relates to the
 Cheeger constant or bottleneck ratio which in turn, provide bounds on the mixing time
 of Markov chains. It might seem then that bottlenecks allow for the discovery of fast
-mixing regions of the state space. In the planning problem, fast mixing might translate
+mixing regions of the state space. In the planning problem, fast mixing might also translate
 into computational speedup, making policies \textit{simpler} to compute in those
-regions. Efficient random sampling techniques of large state spaces are also often
+regions. Efficient random sampling techniques over large state spaces are also often
 concerned with fast mixing time \parencite{Boyd2004}. In reinforcement learning, the same
-problem would be translated under the question of designing smart \textit{exploration}
+problem would be translated under the question of designing smart exploration
 strategies. Optimal partitioning of the MDP-induced graph Laplacian could thus help to
 identifying regions of fast mixing time and create options tailored for exploration.
 
@@ -393,18 +391,18 @@ dynamics to simplify large Markov chains.
 The idea of matrix decomposition was initiated by \cite{AndoFisher1963} from
 economics for the study of linear dynamical systems with \textit{nearly decomposable}
 structures. The class of Markov chains with strong intra-cluster interactions and weak
-inter-cluster ones has then been studied under the name of \textit{Nearly Completely
+inter-cluster ones has been studied under the name of \textit{Nearly Completely
 Decomposable Markov chains} (NCD) \parencite{Gaitsgori1975}.
-\cite{Courtois1977} also dedicated a book topic in the field of queuing theory. The control problem of Markov chains
+\cite{Courtois1977} also dedicated a book on the topic in the field of queuing theory. The control problem of Markov chains
 with such structure was considered in \cite{Teneketzis1980, Delebecque1981,
-Phillips1981, Coderch1983} building upon the Courtois' work. This approach treats the \textit{slower} inter-cluster transitions as
-matrix perturbations. Similar ideas are also brought closer to the framework of \mdps
+Phillips1981, Coderch1983} building upon Courtois' work. This approach treats the \textit{slower} inter-cluster transitions as
+matrix perturbations. Similar ideas were also brought closer to the framework of \mdps
 with \cite{Haviv1985, Aldhaheri1991, Zhang1997}. 
 
 From an information theoretic point of view, lumpability can be seen as a lossy
 compression scheme \parencite{ Watanabe1960, Lindqvist1978}. On the more general
 topic of graph clustering, the  \textsc{infomap} algorithm of \cite{Rosvall2008} also
-exploits this compression intuition. By taking random walks in the graph, their
+exploits some compression intuition. By taking random walks in the graph, their
 algorithms seeks a partitioning of \textit{minimum length}. More recently,
 \cite{Deng2011} gave a characterization of the optimal aggregation of uncontrolled NCD systems in
 terms of the Kullback-Leibler divergence. They showed that optimal partitioning yields

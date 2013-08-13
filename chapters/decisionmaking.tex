@@ -10,7 +10,7 @@ time such the price of a stock, or the
 number of connections to a web service over the day for example. Due to the
 complexity of many systems in real life, it is desirable to assume certain properties to make the modelling exercise more tractable. One could, for instance, decide to treat the \rvs as being
 \textit{independent and identically distributed} (iid), but only at the cost of loosing the ability to
-capture correlation among the \rvs. The so-called \textit{Markov}
+capture correlation among them. The so-called \textit{Markov}
 assumption is often used when the iid property is deemed too restrictive.
 
 \begin{defn}
@@ -70,7 +70,7 @@ $i$th component set to 1.
 Using the Chapman-Kolmogorov equation, a state $j$ is classified as being
 \termidx{accessible} from $i$ if $[\mathbf{P}^n]_{i,j} > 0$ for some $n \geq 0$. When
 the relation holds in both direction, $i$ and $j$ are said to \termidx{communicate}. If
-every possible pair of states can communicate, the Markov chain is classified as being
+every possible pairs of states can communicate, the Markov chain is classified as being
 \termidx{irreducible}. Given that a state $j$ has been initially encountered once, it is said to be \termidx{recurrent} if the probability of visiting it again is nonzero. That
 is, denote $T_j$ the time at which the chain returns to $j$, the recurrence property
 expresses the fact that $P(T_j < \infty | X_0 = j) > 0$. When $E(T_j | X_0) < \infty$,
@@ -82,14 +82,14 @@ property: a condition often assumed in the analysis of Markov Decision Processes
 A Markov chain is \termidx{ergodic} if it is irreducible and positive recurrent.
 \end{defn}
 
-It occurs often that one is interested in knowing how a given probability distribution
+It often occurs that one is interested in knowing how the probability distribution
 for $X_n$ would evolve in time.  Denote the
 distribution of $X_n$ by the row vector $\mu_n$ and the \termidx{initial distribution}
 by $\mu_0$. The follow relation can be shown to hold
 \begin{equation}
  \mathbf{\mu}_n= \mathbf{\mu}_0 \mathbf{P}^n \label{eq:initial-dist}
 \end{equation}
-noting that the Markov property implies that
+by noting that the Markov property implies that
 \begin{align}
 P(X_0 &= i_0, X_1 = i_1, X_2 = i_2, \dots, X_n = i_n) = \notag \\
 &P(X_0 = i_0) P(X_1 = i_1 | X_0 = i_0) P(X_2 = i_2 | X_1 = i_1) \dots P(X_n = i_n |
@@ -118,7 +118,7 @@ distribution. When the Markov chain reaches the stationary distribution, it is s
 in its \termidx{steady-state} mode.
 
 An important characterization of the properties of stochastic matrices comes from the
-theory of nonnegative matrices in the form of the Perron-Frobenius theorem. First, the spectral radius of a square matrix is defined as 
+theory of nonnegative matrices in the form of the Perron-Frobenius theorem. First, define the spectral radius of a square matrix as
 
 \begin{equation}
 \rho(A) \overset{\underset{\mathrm{def}}{}}{=} \max_i(|\lambda_i|)
@@ -189,8 +189,8 @@ existence of a stationary distribution is not necessarily guaranteed.
 The notion of a value function goes on par with the principle of optimality
 that underlies the decision theoretic framework of MDPs. It is assumed in this context
 that a decision maker, or \textit{agent}, is acting in such a way as to optimize some
-intrinsic notion of \textit{appropriateness} in its behaviour. In the definition
-of an MDP \ref{defn:mdp} , the reward function $r$ captures this idea. Under this setting, an agent also tries to optimize a quantity known as the \termidx{return}
+intrinsic notion of \textit{appropriateness} in its behaviour. In the definition \ref{defn:mdp}
+of an MDP, the reward function $r$ captures this idea. Under this setting, an agent  tries to optimize a quantity known as the \termidx{return}
 
 \begin{defn}
 The return of an \mdp is the total discounted sum of the rewards originating from
@@ -217,7 +217,7 @@ x\right] , x \in \mathcal{X} \label{eq:value-function}
 \end{equation}
 \end{defn}
 
-An behaviour is said to be optimal when the value of its policy is also optimal. An
+A behaviour is said to be optimal when the value of its policy is also optimal. An
 optimal value function $V^*: \mathcal{X} \mapsto \mathbb{R}$ is one which obtains
 the maximum possible expected return for every state.
 
@@ -237,7 +237,6 @@ A_0 = a \right], \; x \in \mathcal{X}, a \in \mathcal{A}
 
 If the action-value function yields the maximum expected return for every state-action pair, it is said to be optimal and is denoted by $Q^*$. One can go from the
 action-value function to the value function by noting that for a finite-action MDP
-(definition \ref{defn:mdp})
 \begin{equation}
 V^*(x) = \max_{a \in \mathcal{A}} Q^*(x, a) \label{eq:qopt-to-vopt}
 \end{equation}
@@ -262,10 +261,10 @@ V^\pi(x) = r(x, \pi(x)) + \gamma \sum_{y \in \mathcal{X}} P(y, \pi(x), x) V^\pi(
 
 The recursive formulation of the Bellman equations relates the value of states
 to that of its possible successor states, weighted by their probability of occurrence. For a finite d-dimensional state space $\mathcal{X}$, $V^\pi$ and
-$r^\pi$ can be thought as a vectors in $\mathbb{R}^d$ with $\mathcal{P}$ being a
+$r^\pi$ can be thought to be vectors in $\mathbb{R}^d$ with $\mathcal{P}$ being a
 transition matrix $\mathbf{P}: \mathbb{R}^{d \times d}$. It can be seen that the
-Bellman equations (\ref{eq:bellman-equations}) define a linear system of equations in
-$d$ unknows whose unique solution is $V^\pi$
+Bellman equations define a linear system of equations in
+$d$ unknowns whose unique solution is $V^\pi$
 
 \begin{equation}
 \mathbf{V}^\pi = \mathbf{r}^\pi + \gamma \mathbf{P}^\pi \mathbf{V}^\pi
@@ -313,15 +312,13 @@ Bellman equations \ref{eq:bellman-equations} and that of equation \ref{eq:bellma
 policy, the $V$ term on the other hand might not correspond to $V^\pi$. 
 The Bellman operator happens to be a special type of function called a
 \termidx{contraction mapping}. This characterization allows the \termidx{Banach
-fixed-point theorem} to be applied to prove convergence.  Starting with an
+fixed-point theorem} to be applied for proving convergence.  Starting with an
 estimate of the value function for a policy, the iterative application of the Bellman
 operator will converge in the limit to a unique fixed point corresponding to $V^\pi$. The same principle underlies the value and policy iteration algorithms for computing the optimal value function. 
 
 Before delving into the details of these
 algorithms, the \termidx{Bellman optimality operator} must be introduced. Just as
-$T^\pi$ (\ref{eq:bellman-operator}), $T^\optimal$ is a maximum-norm contraction
-mapping $T^\optimal: \mathbb{R}^\mathcal{X} \times \mathbb{R}^\mathcal{X}$ but 
-is defined this time as
+$T^\pi$, $T^\optimal: \mathbb{R}^\mathcal{X} \times \mathbb{R}^\mathcal{X}$ is a maximum-norm contraction mapping  but is defined this time as
 \begin{equation}
 (T^\optimal V) = \max_{a \in \mathcal{A}} \left\lbrace r(x, a) + \gamma \sum_{y
 \mathcal{X}} P(y, \pi(x), x) V^\optimal (y) \right\rbrace, \; x \in \mathcal{X} 
@@ -339,12 +336,12 @@ $T^\optimal V^\optimal = V^\optimal$.
 The Banach fixed-point theorem mentioned in the previous section lays the foundations of
 two important approaches for solving MDPs: the value and policy iteration algorithms. By
 \textit{solving and MDP}, one generally refers to finding the optimal value function
-underlying an MDP. If the the value function found in that way is indeed optimal, an
+underlying an MDP. If the value function found in that way is indeed optimal, an
 optimal policy can be derived by greedily picking the best action from it.
 
 The two main problems of RL which consist in finding the value of a policy or finding an optimal policy are usually called the \termidx{prediction} (figure \ref{fig:prediction-problem}) and \termidx{control} (figure \ref{fig:control-problem}) problems. In the control
 problem, one tries to derive an optimal policy by taking the greedy policy with
-respect to the optimal value function (see \cite{Ross1983} for a proof).
+respect to the optimal value function (see theorem 2.2 of \cite{Ross1983} for a proof). The optimal stationary greedy policy maximizes the right side of
 
 \begin{equation}
 \pi^\optimal(x) = \arg \max_{a \in \mathcal{A}} \left[ r(x,a) + \gamma \sum_{y \in
@@ -370,7 +367,7 @@ the optimal value function must be unique \parencite{Ross1983}.}
 \label{fig:control-problem}
 \end{figure}
 
-Finding $V^*$ thus allow the control problem to be solved using
+Finding $V^*$ thus allows the control problem to be solved using
 equation \ref{eq:greedy-optimal-policy}. The \termidx{value-iteration} algorithm is
 one way in which $V^\optimal$ can be obtained. Let $V_0$ be some arbitrary initial
 bounded function, this method consists in applying the Bellman optimality operator
@@ -379,7 +376,7 @@ $T^\optimal$ successively in the following manner
 V_{k+1} = T^\optimal V_k \label{eq:value-iteration}
 \end{equation}
 
-$V_k$ can be shown \parencite{Ross1983} to uniformly converge to $V^*$ as $k \to \infty$
+$V_k$ can be shown (proposition 3.1 of \cite{Ross1983}) to uniformly converge to $V^*$ as $k \to \infty$
 
 With \termidx{policy iteration}, two steps are interleaved: policy evaluation and
 policy improvement. The general idea goes as follow: from an initial policy $\pi_0$
@@ -391,11 +388,11 @@ by value iteration. Because of the policy evaluation step, policy-iteration is
 computationally more expensive. It plays however an important role in the Actor
 Critic architectures \parencite{Sutton1984}.
 
-The policy and value iterations algorithms belong to the class of algorithms known as
+The policy and value iterations algorithms belong to a class known as
 \termidx{dynamic programming} (DP) methods. Assuming a perfect knowledge of the
 transitions dynamics and reward function, the computational 
 burden is greatly reduced compared to a naive direct policy search approach which could be order
-$\left\vert \mathcal{X} \right\vert^{\left\vert \mathcal{A} \right\vert}$. Under the framework of RL, it will not be possible to maintain these assumptions. DP remains of great importance for the understanding of RL algorithms.
+$\left\vert \mathcal{X} \right\vert^{\left\vert \mathcal{A} \right\vert}$. Under the framework of reinforcement learning, it will not be possible to maintain these assumptions. DP remains of great importance for the understanding of RL algorithms.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Reinforcement Learning
@@ -433,7 +430,7 @@ classified as \termidx{on-policy} or \termidx{off-policy}.
 \subsection{Monte-Carlo}
 The Monte-Carlo approach for solving the control problem estimates the value
 of a state by taking online samples of the return directly from the
-environment or through simulated experience using a model. Throughout multiple episodes, independent samples of return are averaged to
+environment or with simulated experience using a model. Throughout multiple episodes, independent samples of return are averaged to
 obtain an estimate of the true expectation. According to the law of large number, as
 the number of samples goes to infinity, the average becomes an unbiased
 estimator. 
@@ -447,8 +444,8 @@ configuration: an \termidx{exploring start}. In practice this assumption is ofte
 The Monte-Carlo method for control is based on the general framework of policy
 iteration where the current policy is improved greedily with respect to some
 estimate of its value function. It must be noted that policy iteration only requires to update the policy
-toward the greedy policy.  Soft-policies of the form $\pi(x, a) > 0$ consider a slightly perturbed instance
-of the greedy policy such that the previous condition is not completely violated. It then becomes possible to explore non-greedy actions and the need for exploring starts is eliminated \parencite{SuttonBarto1998}. A class of soft policies commonly used is the \termidx{$\epsilon$-greedy} one, where a random action is chosen with probability $\epsilon$, and the greedy action for $1 - \epsilon$. 
+towards the greedy policy.  Soft-policies of the form $\pi(x, a) > 0$ consider a slightly perturbed instance
+of their greedy policy such that the previous condition is not completely violated. It then becomes possible to explore non-greedy actions and the need for exploring starts is eliminated \parencite{SuttonBarto1998}. A class of soft policies commonly used is the \termidx{$\epsilon$-greedy} one, where a random action is chosen with probability $\epsilon$, and the greedy action for $1 - \epsilon$. 
 
 The  general scheme described so far could be described as an on-policy learning approach,
 where the value of a policy is simultaneously being evaluated and used for control.
@@ -495,7 +492,7 @@ Algorithm \ref{alg:td0} shows how the TD update is performed procedurally.
 $x \leftarrow$ initial state\;
 \While{x is not terminal} {
 $a \leftarrow \pi(x)$\;
-$r, x^\prime \leftarrow Step(a)$\;
+$r, x^\prime \leftarrow \FuncSty{Step}(a)$\;
 $V(x) \leftarrow V(x) + \alpha\left[ r + \gamma V(x^\prime) - V(x) \right]$ \;
 $x \leftarrow x^\prime$
 }
@@ -525,15 +522,15 @@ The $\lambda$-return is a mixture of multi-step return with weight $(1 -
 
 As $\lambda$ goes to 0, equation \ref{eq:lambda-return}  simplifies to $R_{t+1} +
 \gamma \hat{V}_t (X_{t+1})$ and amounts to a one-step TD backup of the TD(0)
-algorithm. As $\lambda$ goes to 1, samples of the return from time $t$ until the end of the episode are obtained as in the MC method.
+algorithm. On the other hand, as $\lambda$ goes to 1 samples of the return from time $t$ until the end of the episode are obtained as in the MC method.
 
 TD($\lambda$) is implemented using an additional vector of size $\left\vert
 \mathcal{X} \right\vert$ where each component gets incremented by 1 each time the
 corresponding state is visited. A decay of $\lambda \gamma$ is also applied upon
-each component at each time step. 
+each component for every time step.
 
 \subsection{Sarsa}
-The TD algorithm only solves the policy evaluation problem but not the one of control. Following the general policy iteration paradigm and similar to 
+The TD algorithm only solves the policy evaluation problem but not control one. Following the general policy iteration paradigm and 
 the MC algorithm for control, \textsc{Sarsa} is an on-policy control algorithm making use of
 TD for policy evaluation under a soft-policy exploration strategy. Similar to equation
 \ref{eq:tdupdate}, the action-value function is updated as follow
@@ -549,10 +546,10 @@ TD for policy evaluation under a soft-policy exploration strategy. Similar to eq
 \KwResult{An optimal action-value function for control}
 \ForEach{episode}{
 $x \leftarrow$ initial state\;
-$a \leftarrow Greedy(x)$\;
+$a \leftarrow \FuncSty{Greedy}(x)$\;
 \While{x is not terminal} {
-$r, x^\prime \leftarrow Step(a)$\;
-$a^\prime \leftarrow Greedy(x^\prime)$ \;
+$r, x^\prime \leftarrow \FuncSty{Step}(a)$\;
+$a^\prime \leftarrow \FuncSty{Greedy}(x^\prime)$ \;
 $Q(x, a) \leftarrow Q(x, a) + \alpha\left[ r + \gamma Q(x^\prime, a^\prime) - Q(x, a)
 \right]$ \;
 $x \leftarrow x^\prime$ \;
@@ -561,7 +558,7 @@ $a \leftarrow a^\prime$
 }
 \caption{The on-policy Sarsa algorithm based on a TD(0) policy evaluation scheme.
 The $Greedy$ function is the soft greedy policy derived from the current estimate of
-the action-value function. An $\epsilon$ greedy exploration strategy would be
+the action-value function. An $\epsilon$-greedy exploration strategy would be
 commonly used.}
 \label{alg:sarsa}
 \end{algorithm}
@@ -575,7 +572,7 @@ an optimal policy \parencite{SuttonBarto1998}.
 Since TD learning is an on-policy learning method, the choice of exploration strategy
 directly impacts the convergence to the estimation policy. \textsc{Q-Learning}
 \parencite{Watkins1989} decouples the exploration and evaluation problems and allows for
-any behavior policy to be followed and still converge to $Q^\optimal$. In this case,
+any behavior policy to be followed while still converging to $Q^\optimal$. In this case,
 the updates to the action-value function estimate consist in
 \begin{equation}
 Q_{t+1} (x,a) = Q_t(x,a) + \alpha_t \left[ R_{t+1} + \gamma \max_{a^\prime \in
@@ -592,8 +589,8 @@ The corresponding procedural form is given in algorithm \ref{alg:qlearning}.
 \ForEach{episode}{
 $x \leftarrow$ initial state\;
 \While{x is not terminal} {
-$a \leftarrow Greedy(x)$\;
-$r, x^\prime \leftarrow Step(a)$\;
+$a \leftarrow \FuncSty{Greedy}(x)$\;
+$r, x^\prime \leftarrow \FuncSty{Step}(a)$\;
 $Q(x, a) \leftarrow Q(x, a) + \alpha \left[ r + \gamma \max_{a^\prime \mathcal{A}}
 Q(x^\prime, a^\prime) - Q(x, a) \right]$ \;
 $x \leftarrow x^\prime$
@@ -608,24 +605,24 @@ $\epsilon$-greedy could once again be used for this task.}
 % State Abstraction
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{State-Abstraction}
-The algorithms presented so far assumed \textit{tabular} updates rules where value or
+The algorithms presented so far assumed \textit{tabular} update rules where value or
 action-value functions were expressed as vectors and matrices respectively. For many
-problems, the set of states might have infinite cardinality or simply be too large to fit in
+problems, the state space might have infinite cardinality or be simply too large to fit in
 memory. Furthermore, as the number of dimensions increases, the computational cost
 also increases exponentially. It matters then to seek for a representation of the
-value function capable of generalizing across, possibly unseen, states or state-action
+value function capable of generalizing across possibly unseen states or state-action
 pairs.
 
 By expressing the value function as a parametrized function, the incremental updates
 are performed upon the entries of some parameter vector $\theta$. For
 large state spaces, the number of components in $\theta$ would be much smaller than
-the number of possible states, rendering the problem tractable. Value function
+the number of possible states. Value function
 approximation can be seen as an instance of a supervised learning problem
-with a training set consisting of pairs of states and samples of the return (one-step TD,
+with a training set consisting of states as inputs and samples of the return (one-step TD,
 or full Monte-Carlo) as targets.
 
 Any existing method from supervised learning could potentially be used for this task:
-neural networks, or k-nearest neighbors for regression for example \parencite{Csaba2010}. \textsc{TD-Gammon} of \cite{Tesauro1995} is deemed  one of the great success story in the field, using neural networks for value function approximation. In this thesis, the attention
+neural networks, or k-nearest neighbors for regression for example \parencite{Csaba2010}. \textsc{TD-Gammon} of \cite{Tesauro1995} is considered to be one of the great success story or RL and used neural networks for value function approximation. In this thesis, the attention
 will be mainly drawn upon the so-called \textit{linear methods}. They are simple, but yet
 expressive, function approximators of the form
 
@@ -649,7 +646,7 @@ gradient of the value function with respect to $\theta$ yields
 \label{eq:linear-gradient}
 \end{equation}
 
-Gradient-descents methods update the components of $\theta$ by small increments in the direction of
+Gradient-descent methods update the components of $\theta$ by small increments in the direction of
 the gradient, pointing in the direction of the steepest error. A typical error function minimized in supervised
 learning techniques is the mean-squared error (MSE). Casting the function
 approximation problem under a setting where the true (yet unknown) underlying value
@@ -662,6 +659,8 @@ MSE(\theta) = \sum_{ x \in \mathcal{X}} P(x) \left[ V^\pi(x) - V_\theta(x) \righ
 
 The $P(x)$ term here accounts for probability of observing a given state $x \in \mathcal{X}$ as an input.
 
+TD($\lambda$) with linear function approximation (algorithm \ref{alg:linear-tdlambda}) can be shown to converge under the usual RM conditions on the $\alpha$ parameter \parencite{Tsitsiklis1997}.
+
 \begin{algorithm}
 \DontPrintSemicolon
 \KwData{An arbitrary initialized vector $\theta$, a policy $\pi$ to be evaluated}
@@ -669,7 +668,7 @@ The $P(x)$ term here accounts for probability of observing a given state $x \in 
 $x \leftarrow$ initial state\;
 \While{x is not terminal} {
 $a \leftarrow \pi(x)$\;
-$r, x^\prime \leftarrow Step(a)$\;
+$r, x^\prime \leftarrow \FuncSty{Step}(a)$\;
 $\delta \leftarrow r + \gamma \theta^\transpose \varphi[x^\prime] -
 \theta^\transpose \varphi[x]$\;
 $\mathbf{z} \leftarrow \varphi[x] + \gamma \lambda \mathbf{z}$ \;
@@ -680,15 +679,12 @@ $x \leftarrow x^\prime$
 \label{alg:linear-tdlambda}
 \end{algorithm}
 
-TD($\lambda$) with linear function approximation (algorithm \ref{alg:linear-tdlambda}) can be shown to converge under the usual RM conditions on the $\alpha$
-parameter \parencite{Tsitsiklis1997}.
-
 \subsection{Basis functions}
 
-The choice of proper function space and feature extraction techniques is a challenging problem which can have a great impact on the quality of the approximation. If one has prior knowledge about certain\textit{regularities} of the optimal value function for the problem at hand, relevant features could be
+The choice of proper function space and feature extraction techniques is a challenging problem which can have a great impact on the quality of the approximation. If one has prior knowledge about certain \textit{regularities} of the optimal value function for the problem at hand, relevant features could be
 specified explicitly. However, when facing the problem of solving a broad class of
 problems for which little is known about its structure, general set of basis functions
-must be used. Two feature extraction schemes are presented below because of their wide
+must be used. Two feature extraction schemes are presented below, chosen for their wide
 applicability and ease of use. 
 
 \subsection{Radial Basis Functions}
@@ -709,11 +705,11 @@ computational cost.
 The choice of norm in equation \ref{eq:rbf} is not restricted to the Euclidean distance
 and other metric could be used. In \cite{Sugiyama2008} for example, the Geodesic
 distance taken over the graph induced by some MDP attempts to better
-capture the intrinsic geometry of the manifold.
+capture intrinsic geometrical features.
  
 \subsection{Fourier Basis Functions}
 
-The use of fourier basis functions for value function approximation was introduced in
+The use of Fourier basis functions for value function approximation was introduced in
 \cite{Konidaris2011b} but relies on the well established theory of Fourier analysis.
 
 The nth order Fourier expansion of some univariate periodic function $f$ with period
@@ -732,7 +728,7 @@ a_k = \frac{2}{T} \int_0^T f(x) \cos \frac{2\pi kx}{T}dx, \; \mbox{and} \; b_k =
 \end{equation}
 
 Since $V^\optimal$ is unknown, the Fourier coefficients cannot be obtained directly from \ref{eq:fouriercoeffs}. They must rather be treated as \textit{weights} and approximated under the linear approximation framework. The Fourier expansion of $f$ results in $2n+1$ terms but
-\cite{Konidaris2011b} shows how it can be simplified to only $n+1$ terms if some
+\cite{Konidaris2011b} showed how it can be simplified to only $n+1$ terms if some
 assumptions are made on the periodicity of the value function. A function $f$ is even if
 $f(x) = f(-x)$, in which case the $\sin$ terms of equation \ref{eq:fourier} can be
 droped. A similar observation can be made if $f$ is odd $-f(x) = f(-x)$ and the
@@ -765,6 +761,6 @@ must be kept. The ith basis function is then defined as
 
 While Fourier basis severely suffer from the curse of dimensionality, the approach has
 the merit of being simple and effective empirically.  Experiments conducted during this
-thesis support this claim. The only choice practitioners have to make is the
+thesis support this claim. Furthermore, the only choice practitioners have to make is the
 order of the expansion. Reasonable results can usually obtained by using only the
 few first lower frequencies of the expansion.

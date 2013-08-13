@@ -7,13 +7,13 @@ abstract time scales can drastically reduce the problem complexity.
 The importance of temporal abstraction can be overlooked when considering \textit{simple} everyday
 human tasks such as preparing coffee, going on a camping trip, changing a bicycle tire,
 etc. A decomposition of these activities at the level of muscle twitches would however quickly expose 
-the impossibility of carrying any form of learning at this level. A form of hierarchical organization must then exist from the micro to the macro-scales. Under the view adopted in this work, the task of preparing coffee would rather consist in a sequence of \textit{coarse} closed-loop policies executed sequentially towards the overall goal of having coffee in a cup. 
+the impossibility of carrying any form of learning at this level. A form of hierarchical organization must then exist from the micro to the macro-scales. Under the view adopted in this work, the task of preparing coffee would rather consist in a sequence of \textit{coarse} closed-loop policies executed sequentially towards the overall goal of \textit{having coffee in a cup}. 
 
 Many authors have tried to formalize this idea under the framework
 of reinforcement learning: the \textsc{MAXQ} method of \cite{Dietterich1998}, the Hierarchical
 Abstract Machines (HAM) of \cite{Parr1997} or Macro-Actions of \cite{Hauskrecht1998} for
 example. These other approaches will not be covered in this thesis and the options framework of 
-\cite{Sutton1999} will be adopted. For a survey of the early work on HRL, the
+\cite{Sutton1999} will rather be adopted. For a survey of the early work on HRL, the
 interested reader is referred to \cite{StolleThesis2004, Sutton1999}.
 
 \section{Options Framework}
@@ -26,7 +26,7 @@ $\beta$.
 
 An option $o \in \mathcal{O}$ can be executed in a \textit{call-and-return} fashion only if under the current state $x \in \mathcal{X}$, $x \in \mathcal{I}$. When $o$ is chosen, the agent acts according to the option policy $\pi$ until  $\beta$ dictates termination, at which point the agent must choose a new option again.
 
-The initiation component is meant to facilitate the decision procedure by reducing the number of possible options to consider at a given state. Its presence could also had been motivated by  historical considerations to accommodate STRIPS-style planning \parencite{Fikes1972} more easily. The definition of the initiation set is sometimes neglected  by some authors, assuming that all options are available everywhere. The algorithm proposed in this thesis automatically curtails admissible states to form well-defined initiation set for every option. It should be noted finally that primitive actions can be seen as a special kind of options which are available everywhere, have a policy which always chooses the same action, and last exactly one step. 
+The initiation component is meant to facilitate the decision procedure by reducing the number of possible options to consider at a given state. Its presence could also had been motivated by  historical considerations to accommodate STRIPS-style planning \parencite{Fikes1972} more easily. The definition of the initiation set is sometimes neglected  by some authors, assuming that all options are available everywhere. The algorithm proposed in this thesis automatically curtails admissible states to form a well-defined initiation set for every option. It should be noted finally that primitive actions can be seen as a special kind of options which are available everywhere, have a policy which always chooses the same action, and last exactly one step. 
 
 The options framework is at the crossroad of  \mdps and semi-\mdps of
 \cite{Bradtke1994}. It considers a base MDP overlaid with variable length courses of
@@ -109,10 +109,9 @@ $\varepsilon(x, o, t)$ where option $o$ is executed for $k$ time steps with cumu
 discounted reward $\mathcal{R}$. Convergence results are provided in \cite{Parr1998}.
 
 An identical algorithmic construct called \textsc{Macro Q-Learning} is also often
-encountered in the literature. It stems from the work on Macro-actions by
+encountered in the literature. It stems from the work on macro-actions by
 \cite{Mcgovern1997} in an attempt to extend the deterministic macro-operators of
-\cite{Korf1985} to closed-loop policies. As opposed to the more general \textsc{SMDP Q-Learning} algorithm of equation \ref{eq:smdp-qlearning}, \textsc{Macro Q-Learning} treats macro-actions and
-and primitive actions separately. The SMDP update rule is applied for macro-actions
+\cite{Korf1985} to closed-loop policies. As opposed to the more general \textsc{SMDP Q-Learning} algorithm of equation \ref{eq:smdp-qlearning}, \textsc{Macro Q-Learning} treats macro-actions and primitive actions separately. The SMDP update rule is applied for macro-actions
 while primitive actions are updated using \ref{eq:qlearning-update}. Clearly, \textsc{SMDP Q-learning} encompasses \textsc{Macro Q-Learning} and can be expressed identically as
 
 \begin{equation}
@@ -121,7 +120,7 @@ Q_{t+1}(x, o) \leftarrow Q_{t}(x, o) + \alpha \left[ \mathcal{R} + \gamma^k
 Q_t(x, o) \right]
 \end{equation}
 
-but where $\mathcal{O}$ necessarily contains all of the primitive actions wrapped as options.\textsc{Macro Q-Learning} is thus equivalent to \textsc{SMDP Q-Learning} where the
+but where $\mathcal{O}$ necessarily contains all of the primitive actions wrapped as options. \textsc{Macro Q-Learning} is thus equivalent to \textsc{SMDP Q-Learning} where the
 options set $\mathcal{O}$ is augmented with single-step options for each primitive
 action.
 
@@ -129,7 +128,7 @@ action.
 
 In order for the \textsc{SMDP Q-Learning} algorithm in equation \ref{eq:smdp-qlearning} to provide a
 good estimate of the optimal option value function, sufficient experience must be
-obtained about every option. While executing an option to completion, fragments of experience of experience relevant for the current option could potentially be used to learn about other options. Since  it is possible to look \textit{within} an option, such an idea can be realized and leading to a sample efficient algorithm.
+obtained about every option. While executing an option to completion, fragments of experience of experience relevant for the current option could potentially be used to learn about other options. Since  it is possible to look \textit{within} an option, such an idea can be realized and leads to a sample efficient algorithm.
 
 \textsc{Intra-Option Learning} is an off-policy algorithm which leverages the valuable
 experience taking place \textit{within} options. While an option is executing, it can simultaneously
@@ -155,7 +154,7 @@ understanding is still lacking. Importance sampling
 corrections similar as those used in \cite{Precup2001} for off-policy TD($\lambda$)
 could be used as a substitute to GQ($\lambda$).
 
-Finally, in order to learn an options policy $\pi$, it is customary to adopt the notion of 
+Finally, in order to learn the policy $\pi$ for an option, it is customary to adopt the notion of 
 \termidx{subgoals}. Subgoal options can be seen as optimizing some intrinsic notion of reward
 consistent with the overall task objective. A \termidx{terminal subgoal value} assigns a
 value for reaching the terminal states of an option determined by $\beta$. A subgoal
